@@ -1,0 +1,28 @@
+{
+    "name": "osd84/aurox",
+    "description": "Lib for build web app",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "OsdAurox\\": "src/OsdAurox/",
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "osd84.fr",
+            "email": "info@osd84.fr"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.9",
+        "ext-pdo": "*",
+        "ext-curl": "*",
+        "ext-mbstring": "*",
+        "ext-imagick": "*"
+    },
+    "require-dev": {
+        "osd84/brutaltestrunner": "^3.0"
+    }
+}

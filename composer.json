@@ -1,0 +1,23 @@
+{
+    "name": "osd84/aurox_website",
+    "description": "aurox exemple app",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "osd",
+            "email": "info@osd84.fr"
+        }
+    ],
+    "require": {
+        "osd84/aurox": "^0.1.12"
+    },
+    "require-dev": {
+        "osd84/brutaltestrunner": "^3.0"
+    }
+}
