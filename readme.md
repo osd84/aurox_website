@@ -9,7 +9,7 @@
 Vous pouvez aussi utiliser Aurox comme point de départ pour une application web.
 
 1. Téléchargez la dernière release :
-   👉 [https://github.com/osd84/aurox_website/releases/latest](Dernière Release Zip)
+   👉  https://github.com/osd84/aurox_website/releases/latest
 
 2. Décompressez-la à la racine de votre projet web.
 
