@@ -16,7 +16,10 @@ Vous pouvez aussi utiliser Aurox comme point de départ pour une application web
 
 3. Copiez le fichier `conf_example.php` en `conf.php` et adaptez-le à votre projet.
 
-5. Configurez Apache pour exposer uniquement le dossier `/public` :
+
+6. En mode **DEV** lancez directement depuis le dossier racince `php -S localhost:8080 -t public `
+
+5. En **PROD** configurez Apace2 Apache pour exposer uniquement le dossier `/public` :
 
 ```apache
 DocumentRoot /var/www/mon_projet/public/
