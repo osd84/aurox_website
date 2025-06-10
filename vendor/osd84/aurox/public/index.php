@@ -13,7 +13,11 @@ require_once '../aurox.php';
 <?php require('../templates/header.php'); ?>
 <main class="py-4">
     <h1>Accueil</h1>
-    <p>Contenu de la page</p>
+    <p>
+        Cette mini application sert à tester les fonctionnalités de base de l'application côté FRONT. <br>
+        Et les tests unitaires. <br>
+        Pour avoir de vrais starter pack voir sur <a href="https://aurox.fr">La Documentation</a>
+    </p>
 
     <h3>Detection des petits écran Base::isMobile()</h3>
 

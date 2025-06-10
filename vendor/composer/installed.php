@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'osd84/aurox_website',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '192c7314e259ab096e3eeb9e0c28700a6630a331',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,18 +11,18 @@
     ),
     'versions' => array(
         'osd84/aurox' => array(
-            'pretty_version' => '0.1.12',
-            'version' => '0.1.12.0',
-            'reference' => '13ae05a836416173431866761fd712b32d5ae2c3',
+            'pretty_version' => '0.1.14',
+            'version' => '0.1.14.0',
+            'reference' => '9d281f8d19a543d40a1d01345d318e1da33a959a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../osd84/aurox',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'osd84/aurox_website' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '192c7314e259ab096e3eeb9e0c28700a6630a331',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

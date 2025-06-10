@@ -2,6 +2,9 @@
 
 **Une collection d’utilitaires PHP inspirée du Brutalisme et du Brutalism Dev Design.**
 
+Documentation : https://aurox.fr
+
+
 ---
 
 ⚠️ **ALPHA - Ne pas utiliser en production**  
@@ -51,39 +54,11 @@ Toutes les classes et fonctions sont accessibles, selon les exemples fournis ici
 
 ## Utilisation comme squelette d’application
 
-Vous pouvez aussi utiliser Aurox comme point de départ pour une application web.
+Vous trouverez ici le Starter Pack pour Website et les infos :<br>
 
-1. Téléchargez la dernière release :
-   👉 [https://github.com/PetitCitron/aurox/releases/latest](https://github.com/PetitCitron/aurox/releases/latest)
-
-2. Décompressez-la à la racine de votre projet web.
-
-3. Installez les dépendances :
-
-```bash
-composer install
-composer dump-autoload
-```
-
-4. Copiez le fichier `conf_example.php` en `conf.php` et adaptez-le à votre projet.
-
-5. Configurez Apache pour exposer uniquement le dossier `/public` :
-
-```apache
-DocumentRoot /var/www/mon_projet/public/
-```
-
----
-
-## Structure de base
-
-* Vos **routes** vont dans [`app/AppUrls.php`](app/AppUrls.php)
-* Vos **modèles**, si besoin, dans [`app/Models`](app/Models)
-* Incluez [`aurox.php`](aurox.php) dans vos fichiers `.php` comme dans [`public/index.php`](public/index.php)
-* Créez vos propres templates, contrôleurs, etc.
-
-> Aurox ne fournit **ni système de routing**, **ni sécurité intégrée**.
-> C’est à vous de gérer. C’est volontaire.
+Starter Pack Website : https://github.com/osd84/aurox_website <br>
+Starter Pack Blog : #Bientôt <br>
+Starter Pack E-commerce : #Bientôt <br>
 
 ---
 

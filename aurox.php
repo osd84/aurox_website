@@ -77,14 +77,16 @@ if (!AppConfig::get('debug')) {
 }
 
 // DB
-Dbo::getInstance(
-    AppConfig::get('host'),
-    AppConfig::get('port'),
-    AppConfig::get('db'),
-    AppConfig::get('user'),
-    AppConfig::get('pass', safe: true),
-    AppConfig::get('charset')
-);
+if(AppConfig::get('dbActive', false)) {
+    Dbo::getInstance(
+        AppConfig::get('host'),
+        AppConfig::get('port'),
+        AppConfig::get('db'),
+        AppConfig::get('user'),
+        AppConfig::get('pass', safe: true),
+        AppConfig::get('charset')
+    );
+}
 
 // Flash
 $GLOBALS['messages'] = [];

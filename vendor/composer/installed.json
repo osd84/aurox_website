@@ -2,17 +2,17 @@
     "packages": [
         {
             "name": "osd84/aurox",
-            "version": "0.1.12",
-            "version_normalized": "0.1.12.0",
+            "version": "0.1.14",
+            "version_normalized": "0.1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/osd84/aurox.git",
-                "reference": "13ae05a836416173431866761fd712b32d5ae2c3"
+                "reference": "9d281f8d19a543d40a1d01345d318e1da33a959a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/osd84/aurox/zipball/13ae05a836416173431866761fd712b32d5ae2c3",
-                "reference": "13ae05a836416173431866761fd712b32d5ae2c3",
+                "url": "https://api.github.com/repos/osd84/aurox/zipball/9d281f8d19a543d40a1d01345d318e1da33a959a",
+                "reference": "9d281f8d19a543d40a1d01345d318e1da33a959a",
                 "shasum": ""
             },
             "require": {
@@ -25,7 +25,7 @@
             "require-dev": {
                 "osd84/brutaltestrunner": "^3.0"
             },
-            "time": "2025-06-05T21:30:17+00:00",
+            "time": "2025-06-09T05:49:27+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -47,7 +47,7 @@
             "description": "Lib for build web app",
             "support": {
                 "issues": "https://github.com/osd84/aurox/issues",
-                "source": "https://github.com/osd84/aurox/tree/0.1.12"
+                "source": "https://github.com/osd84/aurox/tree/0.1.14"
             },
             "install-path": "../osd84/aurox"
         },

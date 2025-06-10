@@ -16,8 +16,10 @@ return [
     'prodUrl' => 'https://127.0.0.1:8000',
     'appUrl' => 'https://127.0.0.1:8000',
 
-    'debug' => false, // change me to false in production
+    'debug' => true, // change me to false in production
+    'dbActive' => false,
     'host' => '127.0.0.1',
+    'port' => '3306',
     'db' => 'aurox_tests',
     'user' => 'test',
     'pass' => '<changemeTestOnly£>',

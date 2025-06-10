@@ -2,11 +2,11 @@
 
 **Un Starter pack de Website basé sur OSD_Aurox**
 
+Démo : https://demo-site.aurox.fr/
 
+Doc : https://aurox.fr/
 
 ## Utilisation comme squelette d’application
-
-Vous pouvez aussi utiliser Aurox comme point de départ pour une application web.
 
 1. Téléchargez la dernière release :
    👉  https://github.com/osd84/aurox_website/releases/latest
