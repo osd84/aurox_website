@@ -10,10 +10,12 @@ $tester = new BrutalTestRunner();
 $tester->header(__FILE__);
 
 
-$tester->assertEqual( AppConfig::get('appName'), 'OsdAurox', 'AppConfig ok');
+$tester->assertEqual( AppConfig::get('appName'), 'OSD_Aurox', 'AppConfig ok');
 
 $instance = AppConfig::getInstance();
-$tester->assertEqual( $instance->appName, 'OsdAurox', 'AppConfig singleton ok');
+$tester->assertEqual( $instance->appName, 'OSD_Aurox', 'AppConfig singleton ok');
+
+$tester->assertEqual( AppConfig::get('dbActive'), true, 'dbActive ok');
 
 // test si debug
 $tester->assertEqual( AppConfig::isDebug(), true, 'AppConfig debug ok');

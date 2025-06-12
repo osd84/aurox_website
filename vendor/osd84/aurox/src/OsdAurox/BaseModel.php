@@ -60,7 +60,11 @@ abstract class BaseModel {
             $stmt = $pdo->prepare("SELECT $select FROM $table WHERE id = :id");
             $id = (int) $id;
             $stmt->execute(['id' => $id]);
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
+            $entity = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (empty($entity)) {
+                return null;
+            }
+            return $entity;
         } catch (PDOException $e) {
             error_log('Database connection error: ' . $e->getMessage());
             throw new RuntimeException('Database connection error.');
@@ -126,13 +130,17 @@ abstract class BaseModel {
      * @return array|false L'enregistrement récupéré sous forme de tableau associatif, ou false si aucun enregistrement n'est trouvé.
      * * @throws RuntimeException Si une erreur de connexion à la base de données survient.
      */
-    public static function getBy(\PDO $pdo, string $field, mixed $value): array|false
+    public static function getBy(\PDO $pdo, string $field, mixed $value): ?array
     {
         try {
             $table = static::TABLE;
             $stmt = $pdo->prepare("SELECT * FROM $table WHERE $field = :search");
             $stmt->execute(['search' => $value]);
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
+            $entity = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (empty($entity)) {
+                return null;
+            }
+            return $entity;
 
         } catch (PDOException $e) {
             error_log('Database connection error: ' . $e->getMessage());

@@ -28,9 +28,11 @@ Class AppConfig {
     public string $charset;
     public string $db;
     public string $devIp;
+    public bool $disableHttpsRedirect;
     public string $devUrl;
     public string $discordWebhook;
     public string $host;
+    public string $dbActive;
     public string $port;
     public string $loginUrlForm;
     public string $mailContactDest;
@@ -73,11 +75,14 @@ Class AppConfig {
         $this->appVersion = $conf['appVersion'] ?? '1.0.0';
         $this->debug = $conf['debug'] ?? false;
         $this->devIp = $conf['devIp'] ?? '127.0.0.1';
+        // Désactive la redirection HTTPS en prod,  mode debug = false
+        $this->disableHttpsRedirect = $conf['disableHttpsRedirect'] ?? true;
         $this->devUrl = $conf['devUrl'] ?? 'http://localhost';
         $this->discordWebhook = $conf['discordWebhook'] ?? '';
         $this->featureRegister = $conf['featureRegister'] ?? false;
         $this->featureUserAllowAdminCreate = $conf['featureUserAllowAdminCreate'] ?? false;
         // MysqlConf
+        $this->dbActive = $conf['dbActive'] ?? false;
         $this->host = $conf['host'] ?? '127.0.0.1';
         $this->port = $conf['port'] ?? '3306';
         $this->db = $conf['db'] ?? 'default_db';

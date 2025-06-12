@@ -6,6 +6,11 @@ Class Translations {
 
     public static array $fr = [
         // OsdAurox\Validator
+        '__testOverwrite' => 'get From Core',
+        '__testOverwrite2' => 'get From Core',
+        '__date' => 'd/m/Y',
+        '__dateTime' => 'd/m/Y H:i:s',
+
         'must be valid email' => 'doit être une email valide',
         'must not be empty' => 'doit être rempli',
         'must be at least {min} characters' => 'doit contenir minimum {min} caractères',
@@ -26,6 +31,14 @@ Class Translations {
         'Please wait while the content is loading..' => 'Veuillez patienter pendant le chargement du contenu..',
         'Please complete the form below' => 'Veuillez compléter le formulaire ci-dessous',
         'Enter the required information :' => 'Veuillez entrer les informations requises :',
+    ];
+
+    public static array $en = [
+        // OsdAurox\Validator
+        '__testOverwrite' => 'get From Core',
+        '__testOverwrite2' => 'get From Core',
+        '__date' => 'Y-m-d',
+        '__dateTime' => 'Y-m-d H:i:s',
     ];
 
 }

@@ -16,6 +16,7 @@ return [
     'prodUrl' => 'https://127.0.0.1:8000',
     'appUrl' => 'https://127.0.0.1:8000',
 
+    'disableHttpsRedirect' => false,
     'debug' => false, // change me to false in production
     'dbActive' => true,
     'host' => '127.0.0.1',

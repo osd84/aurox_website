@@ -48,7 +48,6 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.use_strict_mode', 1);
 session_start(); //by default requires session storage
 
-
 if(AppConfig::get('nonce')) {
     header("Content-Security-Policy: script-src 'self' 'nonce-". Sec::noneCsp() ."'; object-src 'none';");
 }
@@ -57,7 +56,7 @@ if (!AppConfig::get('debug')) {
     header('X-Frame-Options: SAMEORIGIN');
     header('X-XSS-Protection: 1; mode=block');
     header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
-    if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
+    if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') && !AppConfig::get('disableHttpsRedirect')) {
         $appUrl = AppConfig::get('appUrl');
         if (!str_contains($appUrl, 'https://')) {
             die('HTTPS is required in PROD');

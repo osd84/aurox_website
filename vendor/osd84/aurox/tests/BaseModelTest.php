@@ -19,6 +19,10 @@ $tester->assertEqual($instancePost->getTable(), 'posts', 'getTable() ok');
 $post = PostsModel::get($pdo, 1);
 $tester->assertEqual($post['id'], 1, 'get() ok');
 
+// Test get null
+$post = PostsModel::get($pdo, 0);
+$tester->assertEqual($post, null, 'get() null ok');
+
 $post = PostsModel::getBy($pdo, 'title', 'title1');
 $tester->assertEqual($post['id'], 1, 'getBy() ok');
 

@@ -3,7 +3,7 @@
         'name' => 'osd84/aurox_website',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '192c7314e259ab096e3eeb9e0c28700a6630a331',
+        'reference' => '60d7ad253029c196d76162c12338aed079fb74e9',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'osd84/aurox' => array(
-            'pretty_version' => '0.1.14',
-            'version' => '0.1.14.0',
-            'reference' => '9d281f8d19a543d40a1d01345d318e1da33a959a',
+            'pretty_version' => '0.1.17',
+            'version' => '0.1.17.0',
+            'reference' => 'eae809f4c308b8fd26f44336bfc3c5c1661f632e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../osd84/aurox',
             'aliases' => array(),
@@ -22,7 +22,7 @@
         'osd84/aurox_website' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '192c7314e259ab096e3eeb9e0c28700a6630a331',
+            'reference' => '60d7ad253029c196d76162c12338aed079fb74e9',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

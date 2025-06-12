@@ -26,7 +26,7 @@ class I18n
             // on injecte les traductions de Aurox Core si existent
             $locale = $this->locale;
             if (isset(Translations::$$locale)) {
-                $this->translations = array_merge(Translations::$fr, $this->translations);
+                $this->translations = array_merge(Translations::$$locale, $this->translations);
             }
 
             return true;
@@ -132,6 +132,64 @@ class I18n
             return 'en';
         }
         return $out;
+    }
+
+    /**
+     * Formate une date selon le format spécifié, avec adaptation au format français si la locale actuelle est française.
+     * Sécurisé contre les XSS via Sec::hNoHtml
+     *
+     * @param string $date La date à formater (compatible avec strtotime)
+     * @param string $format Le format de date souhaité (par défaut 'd/m/Y')
+     * @return string La date formatée et sécurisée contre les injections HTML
+     * @throws \LogicException Si le contexte I18n n'est pas initialisé
+     */
+    public static function date(string $date): string
+    {
+        // check if date
+        if (strtotime($date) === false) {
+            return '';
+        }
+
+        $locale = self::currentLocale();
+        $format = 'Y-m-d';
+
+        if($locale) {
+            // on récupère le format dans le fichier de traduction
+            // on peut écraser se format en modifiant /translations/locale.php
+            $format = self::t('__date');
+        }
+
+        return Sec::hNoHtml(date($format, strtotime($date)));
+    }
+
+    /**
+     * Formate une date-heure selon le format spécifié, avec adaptation au format français si la locale actuelle est française.
+     * Sécurisé contre les XSS via Sec::hNoHtml
+     *
+     * @param string $date La date à formater (compatible avec strtotime)
+     * @param string $format Le format de date-heure souhaité (par défaut 'd/m/Y H:i:s')
+     * @return string La date-heure formatée et sécurisée contre les injections HTML
+     * @throws \LogicException Si le contexte I18n n'est pas initialisé
+     */
+    public static function dateTime(string $date, bool $showSec = false): string
+    {
+        // check if date
+        if (strtotime($date) === false) {
+            return '';
+        }
+
+        $locale = self::currentLocale();
+        $format = 'd/m/Y H:i:s';
+
+        if ($locale) {
+            $format = self::t('__dateTime');
+        }
+
+        if(!$showSec) {
+            $format = str_replace(':s', '', $format);
+        }
+
+        return Sec::hNoHtml(date($format, strtotime($date)));
     }
 
 }

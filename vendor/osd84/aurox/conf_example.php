@@ -11,13 +11,14 @@ return [
     'appLang' => 'fr',
     'appVersion' => '1.0.0',
     'devIp' => '127.0.0.1',
+    'disableHttpsRedirect' => False, // si True, désactive la redirection forcée en HTTPS en production
 
     'devUrl' => 'http://127.0.0.1:8000',
     'prodUrl' => 'https://127.0.0.1:8000',
     'appUrl' => 'https://127.0.0.1:8000',
 
-    'debug' => true, // change me to false in production
-    'dbActive' => false,
+    'debug' => True, // mettre False pour passer en production
+    'dbActive' => False,
     'host' => '127.0.0.1',
     'port' => '3306',
     'db' => 'aurox_tests',
@@ -28,7 +29,7 @@ return [
     'passwordMaxLength' => 255,
     'passwordComplexity' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
     'adminFolder' => 'admin',
-    'nonce' => false,
+    'nonce' => False,
     'salt' => '<ChangeTeSalt>',
 
     'mailHost' => '<changMe>',

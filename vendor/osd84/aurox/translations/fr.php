@@ -1,6 +1,8 @@
 <?php
 
 return [
+    //
+    '__testOverwrite2' => 'provient de fr.php',
     'Welcome' => 'Bienvenue',
     'hello_user' => 'Bonjour {name}',
     'Email' => 'Courriel', // une petite note d'humour 😏️

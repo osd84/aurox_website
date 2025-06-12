@@ -290,5 +290,55 @@ $tester->assertEqual(
     "Devrait retourner l'URL correcte dans un scénario réel"
 );
 
+$tester->header("Test de uuidV4()");
+// Test de validation du format d'UUID v4
+$uuid = Sec::uuidV4();
+$tester->assertEqual(
+    preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $uuid),
+    1,
+    "L'UUID doit suivre le format standard UUID v4"
+);
+// Test d'unicité - génération de plusieurs UUIDs
+$uuids = [];
+for ($i = 0; $i < 100; $i++) {
+    $uuids[] = Sec::uuidV4();
+}
+$uniqueUuids = array_unique($uuids);
+$tester->assertEqual(
+    count($uuids),
+    count($uniqueUuids),
+    "Tous les UUIDs générés doivent être uniques"
+);
+
+// Test de la version et de la variante
+$uuid = Sec::uuidV4();
+$hexParts = explode('-', $uuid);
+$tester->assertEqual(
+    substr($hexParts[2], 0, 1),
+    '4',
+    "Le premier caractère du troisième groupe doit être '4' (version 4)"
+);
+$tester->assertEqual(
+    in_array(substr($hexParts[3], 0, 1), ['8', '9', 'a', 'b']),
+    true,
+    "Le premier caractère du quatrième groupe doit être 8, 9, a ou b (variante RFC 4122)"
+);
+
+// Test de longueur correcte
+$tester->assertEqual(
+    strlen($uuid),
+    36,
+    "L'UUID doit avoir une longueur de 36 caractères"
+);
+
+// Test que deux appels successifs renvoient des valeurs différentes
+$uuid1 = Sec::uuidV4();
+$uuid2 = Sec::uuidV4();
+$tester->assertEqual(
+    $uuid1 !== $uuid2,
+    true,
+    "Deux appels successifs doivent générer des UUIDs différents"
+);
+
 
 $tester->footer(exit: false);

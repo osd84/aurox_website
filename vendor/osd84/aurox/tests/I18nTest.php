@@ -12,15 +12,18 @@ $tester->header(__FILE__);
 $GLOBALS['i18n'] = new I18n('en');
 
 // Test de la méthode getLocale()
+$tester->header("Test de getLocale()");
 $locale = $GLOBALS['i18n']->getLocale();
 $tester->assertEqual($locale, 'en', "getLocale() retourne bien 'en' pour la locale par défaut");
 
 // Test de la méthode setLocale() et de son effet
+$tester->header("Test de setLocale()");
 $GLOBALS['i18n']->setLocale('fr');
 $newLocale = $GLOBALS['i18n']->getLocale();
 $tester->assertEqual($newLocale, 'fr', "setLocale() modifie correctement la locale en 'fr'");
 
 // Test de la méthode translate() avec une traduction existante
+$tester->header("Test de translate()");
 $translationKey = 'Welcome';
 $translatedValue = $GLOBALS['i18n']->translate($translationKey);
 $tester->assertEqual($translatedValue, 'Bienvenue', "translate() retourne bien 'Bienvenue' pour la clé 'welcome' dans la locale 'fr'");
@@ -46,7 +49,15 @@ $htmlTranslationSafe = $GLOBALS['i18n']->translate($htmlKey,  ['name' => '<b>Jea
 $expectedSafeOutput = 'Bonjour &lt;b&gt;Jean&lt;/b&gt;';
 $tester->assertEqual($htmlTranslationSafe, $expectedSafeOutput, "translate() échappe correctement le HTML quand l'option safe est activée");
 
+// Test du liens de traduction Core et fichier Translations.php et /translations/<locale>.php
+$trad = $GLOBALS['i18n']->translate('__testOverwrite');
+$tester->assertEqual($trad, 'get From Core', "translate() vient de Translations.php, car existe pas dans /translations/fr.php");
+$trad = $GLOBALS['i18n']->translate('__testOverwrite2');
+$tester->assertEqual($trad, 'provient de fr.php', "translate() vient de /translations/fr.php, Translations.php est écrasé");
+
+
 // Test de la méthode statique t()
+$tester->header("Test de t()");
 $staticTranslation = I18n::t('Welcome');
 $tester->assertEqual($staticTranslation, 'Bienvenue', "I18n::t() retourne la traduction correcte de la clé 'welcome'");
 
@@ -60,8 +71,9 @@ try {
 }
 
 
-$GLOBALS['i18n'] = new I18n('en');
 // Test de la méthode entity
+$tester->header("Test de entity()");
+$GLOBALS['i18n'] = new I18n('en');
 $entity = [
     'name' => 'default',
     'name_en' => 'en',
@@ -112,6 +124,7 @@ $tester->assertEqual($r, 'default', "fieldName field cascade sur custom ok si tr
 
 
 // test currentLocale
+$tester->header("Test currentLocale()");
 $GLOBALS['i18n'] = new I18n('en');
 $currentLocale = I18n::currentLocale();
 $tester->assertEqual($currentLocale, 'en', "currentLocale() retourne bien 'en'");
@@ -135,6 +148,31 @@ $tester->assertEqual($result, 'title_en', "Le champ devrait être 'title_en'");
 // Test avec caractères spéciaux
 $result = I18n::getLocalizedFieldName("contenu<script>alert('123')</script>special_en");
 $tester->assertEqual($result, "contenualert(&#039;123&#039;)special_en_en", "protégé contre XSS");
+
+
+$tester->header("Test I18n::date");
+// Test avec locale française
+$GLOBALS['i18n']->setLocale('fr');
+$tester->assertEqual(I18n::date('2025-01-15'), '15/01/2025', "La méthode date() doit retourner au format français (d/m/Y) quand la locale est 'fr'");
+// Test avec locale anglaise
+$GLOBALS['i18n']->setLocale('en');
+$tester->assertEqual(I18n::date('2025-01-15'), '2025-01-15', "La méthode date() respecte le format personnalisé quand la locale n'est pas 'fr'");
+// Test de sécurisation XSS
+$date = '2025-01-15"><script>alert("XSS")</script>';
+$tester->assertEqual(I18n::date($date), '', "La méthode date() doit sécuriser les entrées contre les XSS");
+
+$tester->header("Test I18n::dateTime");
+// Test avec locale française
+$GLOBALS['i18n']->setLocale('fr');
+$tester->assertEqual(I18n::dateTime('2025-01-15 12:01:23'), '15/01/2025 12:01', "La méthode dateTime() doit retourner au format français (d/m/Y) quand la locale est 'fr'");
+$tester->assertEqual(I18n::dateTime('2025-01-15 12:01:23', showSec: True), '15/01/2025 12:01:23', "La méthode dateTime() doit retourner au format français (d/m/Y) quand la locale est 'fr'");
+// Test avec locale anglaise
+$GLOBALS['i18n']->setLocale('en');
+$tester->assertEqual(I18n::dateTime('2025-01-15 12:01:23'), '2025-01-15 12:01', "La méthode dateTime() respecte le format personnalisé quand la locale n'est pas 'fr'");
+$tester->assertEqual(I18n::dateTime('2025-01-15 12:01:23', showSec: True), '2025-01-15 12:01:23', "La méthode dateTime() respecte le format personnalisé quand la locale n'est pas 'fr'");
+// Test de sécurisation XSS
+$date = '2025-01-15"><script>alert("XSS")</script>';
+$tester->assertEqual(I18n::dateTime($date), '', "La méthode date() doit sécuriser les entrées contre les XSS");
 
 
 $tester->footer(exit: false);
