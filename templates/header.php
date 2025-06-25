@@ -51,6 +51,7 @@ use OsdAurox\Sec;
                     <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::PAGE_FORMS) ?>">Formulaires</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::PAGE_MODALS) ?>">Modales</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::PAGE_MOBILE) ?>">Mobiles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::PAGE_AJAX) ?>">Ajax</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::NOT_FOUND) ?>">404</a></li>
                 </ul>
             </div>

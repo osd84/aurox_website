@@ -11,23 +11,19 @@ class AppUrls
     # 404
     public const NOT_FOUND = '/404.php';
 
-    # login
-    public const LOGIN = '/auth/login.php';
-    public const LOGOUT = '/auth/login.php?action=logout';
-
-    public const ADMIN_DIR = '/admin';
-    public const ADMIN_HOME = '/admin/index.php';
-    public const ADMIN_USERS = '/admin/users.php';
-    public const ADMIN_USER_EDIT = '/admin/user_edit.php';
-    public const ADMIN_USER_ADD = '/admin/user_edit.php';
-
     public const PAGE_CONTACT = '/contact.php';
+    public const PAGE_AJAX = '/ajax.php';
     public const RSS = '/rss.php';
 
     public const PAGE_FORMS = '/forms.php';
     public const PAGE_MODALS = '/modals.php';
     public const PAGE_MOBILE = '/mobile.php';
     public const CATEGORY_SELECT2 = '/category_select2.php';
+
+    // CRON
+
+    // API
+    public const AJAX_ROULETTE = '/ajax/roulette.php';
 
 
     public static function getList(): array
