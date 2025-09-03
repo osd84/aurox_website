@@ -19,12 +19,31 @@ $_SERVER['REQUEST_METHOD'] = 'POST'; // mock
 $_SESSION['csrf'] = Csrf::generate();
 $_POST['_csrf'] = $_SESSION['csrf'];
 $csrf = Csrf::protect();
-$tester->assertEqual(strlen($csrf) > 50, true, 'Csrf is ok');
+$tester->assertEqual(strlen($csrf) > 50, true, 'Csrf n1, CSRF token par session');
 $tester->assertEqual($csrf, $_SESSION['csrf'] ?? null, 'Csrf dans Session');
 
 $_SERVER['REQUEST_METHOD'] = 'POST'; // mock
-$fail = Csrf::verify($csrf);
-$tester->assertEqual($fail, false, 'Csrf false');
+$result = Csrf::verify($csrf);
+$tester->assertEqual($result, true, 'Csrf true');
+
+// seconde requête OK Csrf par session
+$_SERVER['REQUEST_METHOD'] = 'POST'; // mock
+$csrf = Csrf::protect();
+$result = Csrf::verify($csrf);
+$tester->assertEqual($result, true, 'Csrf true n2, ok nouvelle requete mais token par session');
+
+// troisieme requête NOK Csrf par request
+$_SERVER['REQUEST_METHOD'] = 'POST'; // mock
+$csrf = Csrf::protect(forcePerRequest: true); // Le Token change
+$_POST['_csrf'] = $csrf;
+$result = Csrf::verify($csrf);
+$tester->assertEqual($result, true, 'Csrf true n3, ok nouveau token par requete');
+
+// Si on refait une requête avec l'ancien token on est refusé car le token change à chaque requête
+$csrf = Csrf::protect(forcePerRequest: true); // Le Token change
+$result = Csrf::verify($csrf); // Celui stocké dans $_POST['_csrf'] est toujours l'ancien, cela doit bloquer
+$tester->assertEqual($result, false, 'Csrf echec n4, mauvais token par requête');
+
 
 $_SERVER['REQUEST_METHOD'] = 'POST'; // mock
 $_SESSION['csrf'] = Csrf::generate();

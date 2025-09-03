@@ -24,10 +24,16 @@ use RuntimeException;
  */
 abstract class BaseModel {
 
+    /**
+     * @var int   Identifiant unique de l'objet
+     */
+    public ?int $id;
+
+
 
     public const TABLE = "unknown";
 
-    public int $id;
+
 
     public function getTable(): string
     {
@@ -159,12 +165,7 @@ abstract class BaseModel {
      * @return array
      * @throws RuntimeException Si une erreur de connexion à la base de données survient
      */
-    public static function getAll(
-        PDO $pdo,
-        ?string $orderBy = 'id',
-        string $orderDir = 'ASC',
-        ?int $limit = 100
-    ): array {
+    public static function getAll(PDO $pdo, ?string $orderBy = 'id', string $orderDir = 'ASC', ?int $limit = 100): array {
         try {
             $table = static::TABLE;
             $sql = "SELECT * FROM $table";
@@ -209,14 +210,7 @@ abstract class BaseModel {
      * @return array
      * @throws RuntimeException Si une erreur de connexion à la base de données survient
      */
-    public static function getAllBy(
-        PDO $pdo,
-        string $field,
-        mixed $value,
-        ?string $orderBy = 'id',
-        string $orderDir = 'ASC',
-        ?int $limit = 100
-    ): array {
+    public static function getAllBy(PDO $pdo, string $field, mixed $value, ?string $orderBy = 'id', string $orderDir = 'ASC', ?int $limit = 100): array {
         try {
             $table = static::TABLE;
             $sql = "SELECT * FROM $table WHERE $field = :search";
@@ -247,6 +241,28 @@ abstract class BaseModel {
             error_log('Database connection error: ' . $e->getMessage());
             throw new RuntimeException('Database connection error.');
         }
+    }
+
+
+    /**
+     * Récupère une valeur spécifique d'une table en fonction de l'ID et du champ demandé.
+     *
+     * @param PDO    $PDO   Instance de connexion PDO à la base de données.
+     * @param mixed  $id    Identifiant de l'élément à rechercher.
+     * @param string $field Nom du champ dont on souhaite récupérer la valeur. (sensible sqli)
+     *
+     * @return string|null Valeur du champ demandé ou null si aucune correspondance n'a été trouvée.
+     */
+    public static function getValueFrom(PDO $PDO, $id, $field): ?string
+    {
+        $table = static::TABLE;
+        $stmt = $PDO->prepare("SELECT $field FROM $table WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $entity = $stmt->fetch();
+        if (empty($entity)) {
+            return null;
+        }
+        return $entity[$field];
     }
 
     public static function count(\PDO $pdo)
@@ -297,17 +313,19 @@ abstract class BaseModel {
      *
      * Retourne les règles de validation de type OsdAurox\Validator
      *
+     *  Toutes les règles sont détailées ici : https://aurox.fr/doc.php/#baseModelGetRules
+     *
      * @return array
      * @throws Exception
      */
     public static function getRules(): array
     {
-//        return [
-//            'email' => Validator::create('email')->email(),
-//            'username' => Validator::create('username')->notEmpty()->required(),
-//        ];
+        // détail dans la doc https://aurox.fr/doc.php/#baseModelGetRules
+        $rules = [
+            'email' => ['type' => 'mail'],
+            'username' => ['type' => 'string', 'minLength' => 3, 'maxLength' => 255, 'required' => true],
+        ];
         throw new Exception('Not implemented');
-
     }
 
     public static function validate(): bool
@@ -323,7 +341,7 @@ abstract class BaseModel {
      * @param array|null $default
      * @return array
      */
-    public static function jsonArrayAggDecode(array $array, string $key, array $default = null): array
+    public static function jsonArrayAggDecode(array $array, string $key, ?array $default = null): array
     {
         if(!is_array($default)) {
             $default = [];
@@ -427,6 +445,8 @@ abstract class BaseModel {
      */
     public static function getSelect(bool $required = true, mixed $selected = null): string
     {
+//        public static function getSelect(bool $required = true, mixed $selected = null, string $domId = 'legalform-select',
+//                                         string $name = 'legalform-id', int $countryId = 1, bool $select2 = true): string
         throw new Exception('Not implemented');
     }
 
@@ -461,5 +481,7 @@ abstract class BaseModel {
 
         throw new RuntimeException('Not implemented');
     }
+
+
 
 }

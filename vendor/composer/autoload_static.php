@@ -32,7 +32,7 @@ class ComposerStaticInit98112baab39faa1203426b74aa596fb8
         ),
         'PHPMailer\\PHPMailer\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+            0 => __DIR__ . '/..' . '/osd84/phpmailer/src',
         ),
         'OsdAurox\\' => 
         array (

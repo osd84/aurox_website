@@ -7,7 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'osd84\\BrutalTestRunner\\' => array($vendorDir . '/osd84/brutaltestrunner/src'),
-    'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'PHPMailer\\PHPMailer\\' => array($vendorDir . '/osd84/phpmailer/src'),
     'OsdAurox\\' => array($vendorDir . '/osd84/aurox/src/OsdAurox'),
     'App\\' => array($baseDir . '/app', $vendorDir . '/osd84/aurox/app'),
 );

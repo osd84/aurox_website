@@ -13,6 +13,17 @@ $tester->header(__FILE__);
 
 $pdo = Dbo::getPdo();
 
+// remise en ordre des datas
+$stmt = $pdo->prepare('UPDATE posts SET 
+                 title = :title, updated_by = :updated_by, status = :status
+                 WHERE id = :id');
+$stmt->execute([
+    'title' => "title1",
+    'updated_by' => null, // null pour spécifier que la colonne doit accepter une valeur NULL
+    'status' => 'draft', // null pour spécifier que la colonne doit accepter une valeur NULL
+    'id' => 1
+]);
+
 $instancePost = new PostsModel();
 $tester->assertEqual($instancePost->getTable(), 'posts', 'getTable() ok');
 
@@ -201,5 +212,9 @@ try {
 $posts = PostsModel::getAllBy($pdo, 'status', null);
 $tester->assertEqual(count($posts), 0, 'getAllBy : gère correctement les valeurs null');
 
+
+$tester->header('Test de getValueFrom()');
+$r = PostsModel::getValueFrom($pdo, 1, 'title');
+$tester->assertEqual($r, 'title1', 'getValueFrom ok');
 
 $tester->footer(exit: false);

@@ -41,7 +41,7 @@ class Csrf
 
     }
 
-    public static function protect()
+    public static function protect(bool $forcePerRequest=false)
     {
         if (!isset($_SESSION['csrf'])) {
             $_SESSION['csrf'] = Csrf::generate();
@@ -51,7 +51,10 @@ class Csrf
             Base::dieOrThrow('CSRF token error');
             exit;
         }
-        return $_SESSION['csrf'] = Csrf::generate();
+        if( $forcePerRequest) {
+            return $_SESSION['csrf'] = Csrf::generate();
+        }
+        return $_SESSION['csrf'];
     }
 
     public static function inputHtml()

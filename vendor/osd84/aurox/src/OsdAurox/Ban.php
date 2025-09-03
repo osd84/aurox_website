@@ -186,7 +186,9 @@ class Ban
                 return true;
             }
             header('HTTP/1.0 403 Forbidden');
-            Discord::send('[BAN] Hack crawling detected by ' . Sec::hNoHtml($instance->realIp) . ' ' . $currentPath);
+            $appName = AppConfig::get('appName') ?: 'UnknownAppName';
+            $url = AppConfig::get('appUrl') ?: 'UnknownAppUrl';
+            Discord::send('[BAN] Hack crawling detected on ' . Sec::hNoHtml($appName) . ' ' . Sec::hNoHtml($url) . ' by ' . Sec::hNoHtml($instance->realIp) . ' ' . $currentPath);
             die($instance->banMessage);
         }
         return false;
@@ -215,7 +217,9 @@ class Ban
         if(AppConfig::get('ban_file_path')) {
             file_put_contents(AppConfig::get('ban_file_path'), $log, FILE_APPEND);
         }
-        Discord::send('[BAN] Hack attempt detected on ' . Sec::hNoHtml(AppConfig::get('appName')) . ' by ' . Sec::hNoHtml(Sec::getRealIpAddr()) . ' ' . $currentPath);
+        $appName = AppConfig::get('appName') ?: 'UnknownAppName';
+        $url = AppConfig::get('appUrl') ?: 'UnknownAppUrl';
+        Discord::send('[BAN] Hack attempt detected on ' . Sec::hNoHtml($appName) . ' ' . Sec::hNoHtml($url) . ' by ' . Sec::hNoHtml(Sec::getRealIpAddr()) . ' ' . $currentPath);
         Discord::send(json_encode($_POST));
         Discord::send(json_encode($_GET));
         return true;

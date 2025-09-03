@@ -26,9 +26,9 @@ $entity = [
 
 // Les règles de validation de l'entity
 $rules = [
-    'email' => Validator::create('email')->email()->required(),
-    'description' => Validator::create('description')->optional(),
-    'category_id' => Validator::create('category_id')->intType()->positive()->required(),
+        'email' => ['type' => 'mail', 'required' => true],
+        'description' => ['type' => 'text', 'optional' => true],
+        'category_id' => ['type' => 'int', 'required' => true, 'positive' => true],
 ];
 
 // Instance du validator de formulaire

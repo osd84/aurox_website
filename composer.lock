@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "osd84/aurox",
-            "version": "0.1.17",
+            "version": "0.1.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/osd84/aurox.git",
-                "reference": "eae809f4c308b8fd26f44336bfc3c5c1661f632e"
+                "reference": "4cd810c8084f001b1175ea994adfd6181e6acbe4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/osd84/aurox/zipball/eae809f4c308b8fd26f44336bfc3c5c1661f632e",
-                "reference": "eae809f4c308b8fd26f44336bfc3c5c1661f632e",
+                "url": "https://api.github.com/repos/osd84/aurox/zipball/4cd810c8084f001b1175ea994adfd6181e6acbe4",
+                "reference": "4cd810c8084f001b1175ea994adfd6181e6acbe4",
                 "shasum": ""
             },
             "require": {
@@ -25,7 +25,7 @@
                 "ext-imagick": "*",
                 "ext-mbstring": "*",
                 "ext-pdo": "*",
-                "phpmailer/phpmailer": "^6.9"
+                "osd84/phpmailer": "^6.10"
             },
             "require-dev": {
                 "osd84/brutaltestrunner": "^3.0"
@@ -50,22 +50,22 @@
             "description": "Lib for build web app",
             "support": {
                 "issues": "https://github.com/osd84/aurox/issues",
-                "source": "https://github.com/osd84/aurox/tree/0.1.17"
+                "source": "https://github.com/osd84/aurox/tree/0.1.25"
             },
-            "time": "2025-06-12T14:01:20+00:00"
+            "time": "2025-09-02T16:03:11+00:00"
         },
         {
-            "name": "phpmailer/phpmailer",
-            "version": "v6.10.0",
+            "name": "osd84/phpmailer",
+            "version": "6.10",
             "source": {
                 "type": "git",
-                "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144"
+                "url": "https://github.com/osd84/PHPMailer.git",
+                "reference": "0ff2d3c8ead628df2493537d9f91db962aa47718"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144",
-                "reference": "bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144",
+                "url": "https://api.github.com/repos/osd84/PHPMailer/zipball/0ff2d3c8ead628df2493537d9f91db962aa47718",
+                "reference": "0ff2d3c8ead628df2493537d9f91db962aa47718",
                 "shasum": ""
             },
             "require": {
@@ -124,8 +124,7 @@
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
             "support": {
-                "issues": "https://github.com/PHPMailer/PHPMailer/issues",
-                "source": "https://github.com/PHPMailer/PHPMailer/tree/v6.10.0"
+                "source": "https://github.com/osd84/PHPMailer/tree/6.10"
             },
             "funding": [
                 {
@@ -133,7 +132,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-04-24T15:19:31+00:00"
+            "time": "2025-06-18T21:02:11+00:00"
         }
     ],
     "packages-dev": [

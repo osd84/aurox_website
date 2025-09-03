@@ -56,24 +56,6 @@ $detect = createMobileDetectWithUA("Mozilla/5.0 (compatible; Googlebot/2.1; +htt
 $tester->assertEqual($detect->isMobile(), false, "Googlebot ne doit pas être détecté comme mobile");
 $tester->assertEqual($detect->isTablet(), false, "Googlebot ne doit pas être détecté comme tablet");
 
-// Test avec CloudFront Mobile
-$detect = new MobileDetect();
-$detect->setHttpHeaders([
-    'HTTP_CLOUDFRONT_isMobile_VIEWER' => 'true',
-    'HTTP_CLOUDFRONT_isTablet_VIEWER' => 'false'
-]);
-$tester->assertEqual($detect->isMobile(), true, "CloudFront Mobile doit être détecté comme mobile");
-$tester->assertEqual($detect->isTablet(), false, "CloudFront Mobile ne doit pas être détecté comme tablet");
-
-// Test avec CloudFront Tablet
-$detect = new MobileDetect();
-$detect->setHttpHeaders([
-    'HTTP_CLOUDFRONT_isMobile_VIEWER' => 'false',
-    'HTTP_CLOUDFRONT_isTablet_VIEWER' => 'true'
-]);
-$tester->assertEqual($detect->isMobile(), false, "CloudFront Tablet ne doit pas être détecté comme mobile");
-$tester->assertEqual($detect->isTablet(), true, "CloudFront Tablet doit être détecté comme tablet");
-
 // Test avec WAP Profile
 $detect = createMobileDetectWithUA("Not empty");
 $detect->setHttpHeaders([
@@ -91,3 +73,5 @@ $tester->assertEqual($detect->isTablet(), false, "User-Agent vide ne doit pas ê
 $detect = createMobileDetectWithUA(null);
 $tester->assertEqual($detect->isMobile(), false, "User-Agent null ne doit pas être détecté comme mobile");
 $tester->assertEqual($detect->isTablet(), false, "User-Agent null ne doit pas être détecté comme tablet");
+
+$tester->footer();

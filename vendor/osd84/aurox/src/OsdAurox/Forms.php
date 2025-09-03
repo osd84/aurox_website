@@ -9,11 +9,10 @@ class Forms
     public string $unique_id;
     public ?FormValidator $validator;
     public mixed $entity;
-    public array $errors = [];
     public bool $ajax = false;
     public string $action = '';
 
-    public function __construct($action, $validator = null, $entity = null, $ajax = false, $unique_id = null)
+    public function __construct($action, ?FormValidator $validator = null, mixed $entity = null, ?bool $ajax = false, ?string $unique_id = null)
     {
         $this->action = $action;
         $this->unique_id = Sec::h($unique_id ?? uniqid('Form'));
@@ -43,17 +42,17 @@ class Forms
     }
 
     public function select(
-        array $l_object, string $name,
-        string $id = null,
-        string $value_field = 'id',
-        string $name_field = 'name',
-        string $label = '',
-        string $class_select = 'form-control',
-        string $class_option = '',
-        bool $div = true,
-        bool $show_label = true,
-        string $div_class = 'mb-3',
-        string $selected = null,
+        array   $l_object, string $name,
+        ?string $id = null,
+        string  $value_field = 'id',
+        string  $name_field = 'name',
+        string  $label = '',
+        string  $class_select = 'form-control',
+        string  $class_option = '',
+        bool    $div = true,
+        bool    $show_label = true,
+        string  $div_class = 'mb-3',
+        ?string $selected = null,
     ): string {
         $id = Sec::h($id);
         if (!$label) {
@@ -103,21 +102,21 @@ class Forms
     }
 
     public function select2Ajax(
-        string $ajax_url,
-        string $name,
-        string $id = null,
-        string $value_field = 'id',
-        string $name_field = 'name',
-        string $label = '',
-        string $class_select = 'form-control',
-        string $class_option = '',
-        bool $div = true,
-        bool $show_label = true,
-        string $div_class = 'mb-3',
-        string $selected = null,
-        string $selectedLabel = null,
-        int $minimumInputLength = 1,
-        bool $required = false,
+        string  $ajax_url,
+        string  $name,
+        ?string $id = null,
+        string  $value_field = 'id',
+        string  $name_field = 'name',
+        string  $label = '',
+        string  $class_select = 'form-control',
+        string  $class_option = '',
+        bool    $div = true,
+        bool    $show_label = true,
+        string  $div_class = 'mb-3',
+        ?string $selected = null,
+        ?string $selectedLabel = null,
+        int     $minimumInputLength = 1,
+        bool    $required = false,
     ) {
         // Échapper les valeurs pour empêcher les injections XSS
         $id = Sec::h($id);
@@ -180,7 +179,7 @@ class Forms
                     delay: 250,
                 },
                 minimumInputLength: $minimumInputLength // Nombre minimum de caractères pour déclencher la recherche
-            });
+            })
         });
     </script>";
 
@@ -191,18 +190,18 @@ class Forms
     }
 
     public function select2(
-        array $l_object, // Liste des objets à afficher dans le select
-        string $name,
-        string $id = null,
-        string $value_field = 'id',
-        string $name_field = 'name',
-        string $label = '',
-        string $class_select = 'form-control',
-        string $class_option = '',
-        bool $div = true,
-        bool $show_label = true,
-        string $div_class = 'mb-3',
-        string $selected = null
+        array   $l_object, // Liste des objets à afficher dans le select
+        string  $name,
+        ?string $id = null,
+        string  $value_field = 'id',
+        string  $name_field = 'name',
+        string  $label = '',
+        string  $class_select = 'form-control',
+        string  $class_option = '',
+        bool    $div = true,
+        bool    $show_label = true,
+        string  $div_class = 'mb-3',
+        ?string $selected = null
     ) {
         // Échapper les valeurs & sécuriser
         $id = Sec::h($id);
@@ -300,19 +299,19 @@ class Forms
      * @throws \Exception If the input type is 'checkbox', as a specific method should handle it.
      */
     public function input(
-        string       $name,
-        string       $label = '',
-        string       $id = null,
-        string       $type = 'text',
-        string       $placeholder = '',
-        string       $class = 'form-control',
-        mixed        $value = '',
-        bool         $required = false,
-        bool         $autocomplete = false,
-        bool         $div = true,
-        bool         $show_label = true,
-        bool         $row = true,
-        int          $label_width = 2,
+        string  $name,
+        string  $label = '',
+        ?string $id = null,
+        string  $type = 'text',
+        string  $placeholder = '',
+        string  $class = 'form-control',
+        mixed   $value = '',
+        bool    $required = false,
+        bool    $autocomplete = false,
+        bool    $div = true,
+        bool    $show_label = true,
+        bool    $row = true,
+        int     $label_width = 2,
         int          $input_width = 10,
         string       $div_class = 'mb-3',
         string       $fa_icon = '',
@@ -419,19 +418,19 @@ class Forms
     }
 
     public function date(
-        string $name,
-        string $label = '',
-        string $id = null,
-        string $placeholder = '',
-        string $class = 'form-control',
-               $value = '',
-        bool $required = false,
-        bool $autocomplete = false,
-        bool $div = true,
-        bool $show_label = true,
-        bool $row = true,
-        int $label_width = 2,
-        int $input_width = 10,
+        string  $name,
+        string  $label = '',
+        ?string $id = null,
+        string  $placeholder = '',
+        string  $class = 'form-control',
+                $value = '',
+        bool    $required = false,
+        bool    $autocomplete = false,
+        bool    $div = true,
+        bool    $show_label = true,
+        bool    $row = true,
+        int     $label_width = 2,
+        int     $input_width = 10,
         string $div_class = 'mb-3',
         string $fa_icon = ''
     ): string {
@@ -518,15 +517,15 @@ class Forms
     }
 
     public function checkbox(
-        string $name,
-        string $label = '',
-        string $id = null,
-        string $class = 'form-check-input',
-        bool $checked = false,
-        bool $required = false,
-        bool $div = true,
-        string $div_class = 'mb-3',
-        bool $show_label = true,
+        string  $name,
+        string  $label = '',
+        ?string $id = null,
+        string  $class = 'form-check-input',
+        bool    $checked = false,
+        bool    $required = false,
+        bool    $div = true,
+        string  $div_class = 'mb-3',
+        bool    $show_label = true,
     ): string {
         // Échappement des valeurs
         $id = Sec::h($id);
@@ -585,19 +584,19 @@ class Forms
     }
 
     public function textarea(
-        string $name,
-        string $label = '',
-        string $id = null,
-        string $placeholder = '',
-        string $class = 'form-control',
-               $value = '',
-        bool $required = false,
-        bool $autocomplete = false,
-        bool $div = true,
-        bool $show_label = true,
-        int $rows = 5,
-        int $cols = 50,
-        string $div_class = 'mb-3'
+        string  $name,
+        string  $label = '',
+        ?string $id = null,
+        string  $placeholder = '',
+        string  $class = 'form-control',
+                $value = '',
+        bool    $required = false,
+        bool    $autocomplete = false,
+        bool    $div = true,
+        bool    $show_label = true,
+        int     $rows = 5,
+        int     $cols = 50,
+        string  $div_class = 'mb-3'
     ): string {
         $id = Sec::h($id);
         if (!$label) {

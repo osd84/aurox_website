@@ -103,17 +103,14 @@ class FormValidator
         if(count($this->errors) > 0) {
             $this->is_valid = false;
         }
+        $validator = new \OsdAurox\Validator();
         $alreadyRaised = [];
         foreach ($rules as $field => $rule) {
-                if($field != $rule->field) {
-                    throw new \Exception("Field name in rule and data must be the same");
-                }
-                $field_val = $data[$rule->field] ?? null;
-                $errors = $rule->validate($field_val);
+                $errors = $validator->validate([$field => $rule], $data);
                 foreach ($errors as $error) {
-                    $flag = trim($rule->field . '-' . $error['msg']);
+                    $flag = trim($field. '-' . $error['msg']);
                     if (!in_array($flag, $alreadyRaised)) {
-                        $this->addError($rule->field, $error['msg']);
+                        $this->addError($field, $error['msg']);
                         $alreadyRaised[] = $flag;
                     }
                 }

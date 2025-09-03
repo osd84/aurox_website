@@ -2,18 +2,19 @@
 
 
 use App\AppUrls;
+use OsdAurox\Csrf;
 use OsdAurox\Flash;
 use OsdAurox\FormValidator;
-use OsdAurox\Base;
 use OsdAurox\Forms;
 use OsdAurox\I18n;
-use OsdAurox\Modal;
 use OsdAurox\Sec;
-use OsdAurox\Validator;
 
 $title = 'Aurox';
 
 require_once '../aurox.php';
+
+$csrf = Csrf::protect(forcePerRequest: true); // Le jeton CSRF va changer à chaque requête Opération sensibles, impossible à "rejouer"
+
 
 // Entity au format Array
 $entity = [
@@ -26,9 +27,9 @@ $entity = [
 
 // Les règles de validation de l'entity
 $rules = [
-    'email' => Validator::create('email')->email()->required(),
-    'description' => Validator::create('description')->optional(),
-    'category_id' => Validator::create('category_id')->intType()->positive()->required(),
+    'email' => ['type' => 'mail', 'required' => true],
+    'description' => ['type' => 'varchar', 'optional' => true],
+    'category_id' => ['type' => 'integer', 'required' => true, 'positive' => true],
 ];
 
 // Instance du validator de formulaire
@@ -80,6 +81,10 @@ if(Sec::isPost()) {
                                 <!-- input text classique -->
 
                                 <?= $form->input('email', label: I18n::t('Email'), type: 'email', required: true, row: false, div_class: '') ?>
+
+                                <!-- protection Csrf -->
+                                <?= Csrf::inputHtml(); ?>
+
 
                                 <!-- select2Ajax via Forms -->
 

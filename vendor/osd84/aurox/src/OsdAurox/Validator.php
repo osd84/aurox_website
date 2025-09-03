@@ -5,466 +5,928 @@ namespace OsdAurox;
 
 
 use DateTime;
+use OsdAurox\Field;
 
 class Validator
 {
+    public string $field = ''; // Nom du champs
+    public array $rule = []; // Règle en cours de tests
+    public array $errors = []; // Erreur en train d'être levée
+    public array $formValidatorErrors = [];
 
-    private array $rules = [];
-    public string $field = '';
-    public bool $optional = false;
+    public array $rules = []; // history des règles testées sur la session
+    public array $fieldChecked = []; // liste des champ testés
+    public array $fieldIgnored = []; // lite des champs ignorés
 
-    // crée un nouveau Validateur
-    public static function create($field): Validator
+
+    public bool $valid = false;
+    public bool $validationIsOk = false;
+
+    public array $sanitizedDatas = [];
+
+    public function __construct()
     {
-        $validator = new Validator();
-        $validator->field = Sec::hNoHtml($field);
-        return $validator;
+        $this->rules = [];
+
     }
 
-    public function optional(): Validator
+    public function clean(): array
     {
-        $this->optional = true;
-        return $this;
+        if(empty($this->validationIsOk)) {
+            throw new \Exception('validation not ok, call validate() first');
+        }
+        return $this->sanitizedDatas;
     }
 
-
-    public function validate($input)
+    public function validate(array $rules, ?array $datasInput): array
     {
         $errors = [];
-        foreach ($this->rules as $rule) {
-            $resultRule = $rule($input);
-            if ($resultRule['valid'] === false) {
+        $this->formValidatorErrors = [];
+        $this->sanitizedDatas = [];
 
-                if($this->optional && empty($input)) {
-                    continue;
-                } else {
-                    $errors[] = [
-                        'field' => $this->field,
-                        'valid' => $resultRule['valid'],
-                        'msg' => $resultRule['msg']
-                    ];
+
+        $this->rules[] = $rules;
+        if(empty($datasInput)) {
+            $this->errors['datasInput'] = [
+                'valid' => false,
+                'msg' => I18n::t('no data provided for validation')
+            ];
+
+            $this->formValidatorErrors[] = [
+                'field' => 'datasInput',
+                'valid' => false,
+                'msg' => I18n::t('no data provided for validation')
+            ];
+            return $this->formValidatorErrors;
+        }
+        $this->fieldIgnored = array_diff_key(array_keys($datasInput), array_keys($rules));
+
+
+        foreach ($rules as $fieldName => $fieldArray) {
+
+            $input = $datasInput[$fieldName] ?? null;
+            $field = new Field($fieldName, $fieldArray, $input);
+
+            $this->fieldChecked[] = $fieldName;
+
+            if($field->optional && $field->required === False && $field->input === null) {
+                continue;
+            }
+
+            // si il y a des options, la valeur doit y être
+            if ($field->options && !is_array($field->options)) {
+                $error = I18n::t('value must be an options array');;
+                $field->errors[] = $error;
+                $this->errors[$fieldName] = $field->errors;
+            }
+
+            if ($field->type === 'integer') {
+                $r = $this->validateIntType($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
                 }
             }
+
+            if ($field->type === 'fk') {
+                $r = $this->validateFk($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->isString()) {
+                $r = $this->validateStringType($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->type === 'float') {
+                $r = $this->validateFloatType($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->type === 'price') {
+                $r = $this->validatePrice($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->type === 'date') {
+                $r = $this->validateDate($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->type === 'datetime') {
+                $r = $this->validateDateTime($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->type === 'bool') {
+                $r = $this->validateBoolean($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            // on verifie si il y a du HTML injecté
+            if($field->type !== 'html') {
+                $r = $this->validateNoHtml($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->type === 'mail') {
+                $r = $this->validateEmail($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->type === 'url') {
+                $r = $this->validateUrl($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->type === 'phoneFr') {
+                $r = $this->validatePhoneFr($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->optional === False) {
+                if ($field->input === null) {
+                    $field->errors[] = I18n::t('field is required');
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->required === True) {
+                $r = $this->validateRequired($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->maxLength !== null ||
+                    $field->minLength !== null) {
+                $r = $this->ValidateLength($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->notEmpty === True) {
+                $r = $this->validateNotEmpty($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->startWith !== null) {
+                $r = $this->validateStartWith($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->positive === True) {
+                $r = $this->validatePositive($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if ($field->regex !== null) {
+                $r = $this->validateRegex($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->inArray !== null) {
+                $r = $this->validateInArray($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                }
+            }
+
+            if($field->min !== null) {
+                $r = $this->validateMin($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->max !== null) {
+                $r = $this->validateMax($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->alpha !== null) {
+                $r = $this->validateAlpha($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            if($field->numericString !== null) {
+                $r = $this->validateNumericString($field);
+                if (!$r['valid']) {
+                    $field->errors[] = $r['msg'];
+                    $this->errors[$fieldName] = $field->errors;
+                }
+            }
+
+            // on complète un tableau de données sanitized ou null
+            if(empty($field->errors)) {
+                $this->sanitizedDatas[$fieldName] = $field->input;
+            }
+
+            foreach ($field->errors as $msg) {
+                $this->formValidatorErrors[] = [
+                    'field' => $fieldName,
+                    'valid' => false,
+                    'msg' => $msg
+                ];
+            }
+
         }
-        return $errors;
+        $this->validationIsOk = True;
+        return $this->formValidatorErrors;
     }
 
 
     public function isValid($input)
     {
-        foreach ($this->rules as $rule) {
-            $resultRule = $rule($input);
-            if ($resultRule['valid'] === false) {
-                return false;
+        if(!$this->validationIsOk) {
+            throw new \Exception('validation not ok, call validate() first');
+        }
+        return count($this->errors) === 0;
+    }
+
+
+    public function validateEmail(Field $field): array
+    {
+        $msg = I18n::t('must be valid email');
+        $valid = true;
+
+        if (!is_string($field->input)) {
+            $valid = false;
+        }
+
+        if ($valid) {
+            $valid = filter_var($field->input, FILTER_VALIDATE_EMAIL);
+        }
+
+        return ['valid' => $valid,
+            'msg' => $msg ?? ''];
+
+    }
+
+    public function validateBoolean(Field $field): array
+    {
+        $msg = I18n::t('doit être une valeur booléenne');
+
+        // Vérifie si la valeur est un booléen strict
+        if (is_bool($field->input)) {
+            return [
+                'valid' => true,
+                'msg' => ''
+            ];
+        }
+
+        return [
+            'valid' => false,
+            'msg' => $msg
+        ];
+    }
+
+    public function validateNumericString(Field $field): array
+    {
+        $msg = I18n::t('must contain only numeric characters as string');
+
+        // Vérifie si la valeur est une chaîne de caractères
+        if (!is_string($field->input)) {
+            return [
+                'valid' => false,
+                'msg' => $msg
+            ];
+        }
+
+        // Vérifie si la chaîne contient uniquement des chiffres (0-9)
+        $valid = preg_match('/^[0-9]+$/', $field->input) === 1;
+
+        return [
+            'valid' => $valid,
+            'msg' => $valid ? '' : $msg
+        ];
+    }
+
+
+    public function validateNotEmpty(Field $field): array
+    {
+        $msg = I18n::t('must not be empty');
+
+        if (is_string($field->input)) {
+            $field->input = trim($field->input);
+        }
+
+        $valid = !empty($field->input);
+
+        return ['valid' => $valid,
+            'msg' => $msg ?? ''];
+    }
+
+    public function validateAlpha(Field $field): array
+    {
+        $msg = I18n::t('must contain only alphanumeric characters');;
+
+        // Vérifie si la valeur est une chaîne de caractères
+        if (!is_string($field->input)) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must contain only alphanumeric characters')
+            ];
+        }
+
+        // Vérifie si la chaîne contient uniquement des caractères alphanumériques
+        $valid = preg_match('/^[a-zA-Z0-9]+$/', $field->input) === 1;
+
+        return [
+            'valid' => $valid,
+            'msg' => $valid ? '' : $msg
+        ];
+    }
+
+
+    public function validateRequired(Field $field): array
+    {
+        $msg = I18n::t('field is required');
+
+        // Vérifie si la valeur est null ou undefined
+        if ($field->input === null) {
+            return ['valid' => false, 'msg' => $msg];
+        }
+
+        // Pour les chaînes de caractères
+        if (is_string($field->input)) {
+            return [
+                'valid' => trim($field->input) !== '',
+                'msg' => $msg
+            ];
+        }
+
+        // Pour les tableaux
+        if (is_array($field->input)) {
+            return [
+                'valid' => count($field->input) > 0,
+                'msg' => $msg
+            ];
+        }
+
+        // Pour les nombres
+        if (is_numeric($field->input)) {
+            return [
+                'valid' => true,
+                'msg' => $msg
+            ];
+        }
+
+        // Pour les booléens
+        if (is_bool($field->input)) {
+            return [
+                'valid' => true,
+                'msg' => $msg
+            ];
+        }
+
+        // Pour tous les autres types
+        return [
+            'valid' => !empty($field->input),
+            'msg' => $msg
+        ];
+
+    }
+
+    public function validateFk(Field $field): array
+    {
+        $pdo = Dbo::getPdo();
+        $table = $field->fkTableName;
+        $field = $field->fkFieldName;
+        $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM $table WHERE $field = :search");
+        $stmt->execute(['search' => Sec::safeForLikeStrong($field->input)]);
+        $entity = $stmt->fetch();
+        if (empty($entity) || !isset($entity['count']) || $entity['count'] < 1) {
+            $valid = false;
+            $msg = I18n::t('must be a valid fk');
+        } else {
+            $valid = true;
+            $msg = '';
+        }
+        return [
+            'valid' => $valid,
+            'msg' => $msg
+        ];
+    }
+
+    public function ValidateLength(Field $field): array
+    {
+        $min = $field->minLength ?? null;
+        $max = $field->maxLength ?? null;
+
+        $msg = '';
+        $valid = false;
+        $inputLength = null;
+        $minPass = false;
+        $maxPass = false;
+
+        // recherche de la taille
+        if (is_string($field->input)) {
+            $inputLength = (int)mb_strlen($field->input);
+        }
+
+        if (is_array($field->input)) {
+            $inputLength = count($field->input);
+        }
+
+        if (is_object($field->input)) {
+            $inputLength = count(get_object_vars($field->input));
+        }
+
+        if (is_int($field->input)) {
+            $inputLength = mb_strlen((string)$field->input);
+        }
+
+        // validation
+        if ($inputLength !== null) {
+
+            // verification du min
+            if ($min === null) {
+                $minPass = true;
+            } else {
+                $minPass = $inputLength >= $min;
+            }
+
+            // verification du max
+            if ($max === null) {
+                $maxPass = true;
+            } else {
+                $maxPass = $inputLength <= $max;
+            }
+
+            $valid = $minPass && $maxPass;
+        }
+
+        if (!$valid) {
+            if ($min && $max) {
+                $msg = I18n::t('must be between {min} and {max} characters', ['min' => $min, 'max' => $max]);
+            } elseif ($min) {
+                $msg = I18n::t('must be at least {min} characters', ['min' => $min]);
+            } else {
+                $msg = I18n::t('must be at most {max} characters', ['max' => $max]);
             }
         }
-        return true;
-    }
-
-
-    public function email(): Validator
-    {
-        $this->rules[] = function ($input) {
-            $msg = I18n::t('must be valid email');
-            $valid = true;
-
-            if (!is_string($input)) {
-                $valid = false;
-            }
-
-            if ($valid) {
-                $valid = filter_var($input, FILTER_VALIDATE_EMAIL);
-            }
-
-            return ['valid' => $valid,
-                'msg' => $msg ?? ''];
-
-        };
-
-        return $this;
-    }
-
-
-    public function notEmpty(): Validator
-    {
-        $this->rules[] = function ($input) {
-            $msg = I18n::t('must not be empty');
-
-            if (is_string($input)) {
-                $input = trim($input);
-            }
-
-            $valid = !empty($input);
-
-            return ['valid' => $valid,
-                'msg' => $msg ?? ''];
-
-        };
-
-        return $this;
+        return ['valid' => $valid,
+            'msg' => $msg ?? ''];
 
     }
 
-    public function required(): Validator
+    public function validateStringType(Field $field): array
     {
-        $this->optional = false;
+        $msg = I18n::t('must be a string');
 
-        $this->rules[] = function ($input) {
-            $msg = I18n::t('field is required');
+        // Vérifie si la valeur est de type string
+        $valid = is_string($field->input);
 
-            // Vérifie si la valeur est null ou undefined
-            if ($input === null) {
-                return ['valid' => false, 'msg' => $msg];
-            }
+        return [
+            'valid' => $valid,
+            'msg' => $msg
+        ];
+    }
 
-            // Pour les chaînes de caractères
-            if (is_string($input)) {
-                return [
-                    'valid' => trim($input) !== '',
-                    'msg' => $msg
-                ];
-            }
 
-            // Pour les tableaux
-            if (is_array($input)) {
-                return [
-                    'valid' => count($input) > 0,
-                    'msg' => $msg
-                ];
-            }
+    public function validateNoHtml(Field $field): array
+    {
+        $msg = I18n::t('must not contain html');
+        $sanitized = Sec::hNoHtml($field->input);
+        $valid = $sanitized == $field->input;
+        return [
+            'valid' => $valid,
+            'msg' => $msg
+        ];
+    }
 
-            // Pour les nombres
-            if (is_numeric($input)) {
-                return [
-                    'valid' => true,
-                    'msg' => $msg
-                ];
-            }
+    public function validateUrl(Field $field): array
+    {
+        $msg = I18n::t('must be a valid URL');
 
-            // Pour les booléens
-            if (is_bool($input)) {
-                return [
-                    'valid' => true,
-                    'msg' => $msg
-                ];
-            }
-
-            // Pour tous les autres types
+        // Vérifie si la valeur est une chaîne de caractères
+        if (!is_string($field->input)) {
             return [
-                'valid' => !empty($input),
-                'msg' => $msg
+                'valid' => false,
+                'msg' => I18n::t('must be a string')
             ];
-        };
+        }
 
-        return $this;
+        // Supprime les espaces avant et après
+        $field->input = trim($field->input);
+
+        // Utilise FILTER_VALIDATE_URL pour vérifier l'URL
+        $valid = filter_var($field->input, FILTER_VALIDATE_URL) !== false;
+
+        return [
+            'valid' => $valid,
+            'msg' => $valid ? '' : $msg
+        ];
     }
 
-
-    public function length(?int $min = null, ?int $max = null): Validator
+    public function validateRegex(Field $field): array
     {
-        $this->rules[] = function ($input) use ($min, $max) {
+        // Vérifier si une regex est définie
+        $regex = $field->regex ?? null;
 
-            $msg = '';
-            $valid = false;
-            $inputLength = null;
-            $minPass = false;
-            $maxPass = false;
-
-            // recherche de la taille
-            if (is_string($input)) {
-                $inputLength = (int)mb_strlen($input);
-            }
-
-            if (is_array($input)) {
-                $inputLength = count($input);
-            }
-
-            if (is_object($input)) {
-                return count(get_object_vars($input));
-            }
-
-            if (is_int($input)) {
-                return mb_strlen((string)$input);
-            }
-
-            // validation
-            if ($inputLength !== null) {
-
-                // verification du min
-                if ($min === null) {
-                    $minPass = true;
-                } else {
-                    $minPass = $inputLength >= $min;
-                }
-
-                // verification du max
-                if ($max === null) {
-                    $maxPass = true;
-                } else {
-                    $maxPass = $inputLength <= $max;
-                }
-
-                $valid = $minPass && $maxPass;
-            }
-
-            if (!$valid) {
-                if($min && $max) {
-                    $msg = I18n::t('must be between {min} and {max} characters', ['min' => $min, 'max' => $max]);
-                } elseif ($min) {
-                    $msg = I18n::t('must be at least {min} characters', ['min' => $min]);
-                } else {
-                    $msg = I18n::t('must be at most {max} characters', ['max' => $max]);
-                }
-            }
-            return ['valid' => $valid,
-                'msg' => $msg ?? ''];
-        };
-
-        return $this;
-    }
-
-    public function stringType(): Validator
-    {
-        $this->rules[] = function ($input) {
-            $msg = I18n::t('must be a string');
-
-            // Vérifie si la valeur est de type string
-            $valid = is_string($input);
-
+        if (!$regex) {
             return [
-                'valid' => $valid,
-                'msg' => $msg
+                'valid' => true,
+                'msg' => '' // Pas de regex fournie, donc aucune validation
             ];
-        };
+        }
 
-        return $this;
-    }
+        // Message d'erreur par défaut
+        $msg = I18n::t('must match the required format');
 
-    public function intType(): Validator
-    {
-        $this->rules[] = function ($input) {
-            $msg = I18n::t('must be a int');
-
-            // Vérifie si la valeur est de type string
-            $valid = is_int($input);
-
+        // Vérifie si l'entrée est une chaîne de caractères
+        if (!is_string($field->input)) {
             return [
-                'valid' => $valid,
-                'msg' => $msg
+                'valid' => false,
+                'msg' => I18n::t('must be a string')
             ];
-        };
+        }
 
-        return $this;
+        // Valide la valeur avec l'expression régulière
+        $valid = preg_match($regex, $field->input) === 1;
+
+        return [
+            'valid' => $valid,
+            'msg' => $valid ? '' : $msg
+        ];
     }
 
-    public function floatType(): Validator
+    public function validatePhoneFr(Field $field): array
     {
-        $this->rules[] = function ($input) {
-            $msg = I18n::t('must be a float');
+        $msg = I18n::t('must be a valid French phone number');
 
-            // Vérifie si la valeur est de type string
-            $valid = is_float($input);
-
+        // Vérifie si l'entrée est une chaîne de caractères
+        if (!is_string($field->input)) {
             return [
-                'valid' => $valid,
-                'msg' => $msg
+                'valid' => false,
+                'msg' => I18n::t('must be a string')
             ];
-        };
+        }
 
-        return $this;
+        // Supprime les espaces et les caractères non pertinents
+        $field->input = preg_replace('/\s+/', '', $field->input);
+
+        // Expression régulière pour les numéros français
+        $regex = '/^(?:\+33|0033|0)[1-9]\d{8}$/';
+
+        // Valide contre l'expression régulière
+        $valid = preg_match($regex, $field->input) === 1;
+
+        return [
+            'valid' => $valid,
+            'msg' => $valid ? '' : $msg
+        ];
     }
 
-    public function min(int|float $minimum): Validator
+
+
+    public function validatePrice(Field $field): array
     {
-        $this->rules[] = function ($input) use ($minimum) {
-            $msg = I18n::t('must be greater than or equal to %s', [$minimum]);
+        // Définir les paramètres de précision et d'échelle (adaptés aux prix)
+        $precision = 10; // Total de chiffres (par défaut : 10)
+        $scale =  2;         // Nombre de chiffres après la virgule (par défaut : 2)
 
-            // Convertir les chaînes numériques en nombres
-            if (is_string($input) && is_numeric($input)) {
-                if (str_contains($input, '.')) {
-                    $input = (float)$input;
-                } else {
-                    $input = (int)$input;
-                }
-            }
+        // Messages d'erreur par défaut
+        $msg = I18n::t('must be a valid price with max precision %s and scale %s', [$precision, $scale]);
 
-            // Vérifier si c'est un nombre
-            if (!is_numeric($input)) {
-                return [
-                    'valid' => false,
-                    'msg' => I18n::t('must be a number')
-                ];
-            }
-
+        // Vérifier si la valeur est numérique
+        if (!is_numeric($field->input)) {
             return [
-                'valid' => $input >= $minimum,
-                'msg' => $msg
+                'valid' => false,
+                'msg' => I18n::t('must be a valid number or decimal')
             ];
-        };
+        }
 
-        return $this;
-    }
-
-
-    public function max(int|float $maximum): Validator
-    {
-        $this->rules[] = function ($input) use ($maximum) {
-            $msg = I18n::t('must be less than or equal to %s', [$maximum]);
-
-            // Convertir les chaînes numériques en nombres
-            if (is_string($input) && is_numeric($input)) {
-                if (str_contains($input, '.')) {
-                    $input = (float)$input;
-                } else {
-                    $input = (int)$input;
-                }
-            }
-
-            // Vérifier si c'est un nombre
-            if (!is_numeric($input)) {
-                return [
-                    'valid' => false,
-                    'msg' => I18n::t('must be a number')
-                ];
-            }
-
+        // Vérifier si la valeur est positive (ou au minimum >= 0)
+        if ($field->input < 0) {
             return [
-                'valid' => $input <= $maximum,
-                'msg' => $msg
-            ];
-        };
-
-        return $this;
-    }
-
-
-    public function startWith(string $prefix, bool $caseSensitive = true): Validator
-    {
-        $this->rules[] = function ($input) use ($prefix, $caseSensitive) {
-            $msg = I18n::t('must start with "%s"', [$prefix]);
-
-            if (!is_string($input)) {
-                return [
-                    'valid' => false,
-                    'msg' => I18n::t('must be a string')
-                ];
-            }
-
-            if ($caseSensitive) {
-                $valid = str_starts_with($input, $prefix);
-            } else {
-                $valid = str_starts_with(strtolower($input), strtolower($prefix));
-            }
-
-            return [
-                'valid' => $valid,
-                'msg' => $msg
-            ];
-        };
-
-        return $this;
-    }
-
-    public function positive(): Validator
-    {
-        $this->rules[] = function ($input) {
-            $msg = '';
-
-            // Convertir les chaînes numériques en nombres
-            if (is_string($input) && is_numeric($input)) {
-                if (str_contains($input, '.')) {
-                    $input = (float)$input;
-                } else {
-                    $input = (int)$input;
-                }
-            }
-
-            // Vérifier si c'est un nombre
-            if (!is_numeric($input)) {
-                return [
-                    'valid' => false,
-                    'msg' => I18n::t('must be a positive number')
-                ];
-            }
-
-            return [
-                'valid' => $input > 0,
+                'valid' => false,
                 'msg' => I18n::t('must be a positive number')
             ];
-        };
+        }
 
-        return $this;
+        // Séparer la partie entière et la partie décimale
+        $parts = explode('.', (string)$field->input);
+        $integerPart = $parts[0];
+        $decimalPart = $parts[1] ?? '';
+
+        // Vérifier la longueur de la partie entière et decimale combinée (précision totale)
+        if (strlen($integerPart) + strlen($decimalPart) > $precision) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must not exceed a total of %s digits including decimals', [$precision])
+            ];
+        }
+
+        // Vérifier la longueur de la partie décimale (échelle)
+        if (strlen($decimalPart) > $scale) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must have a maximum of %s digits after the decimal point', [$scale])
+            ];
+        }
+
+        // Vérifier si une valeur minimale est définie
+        if (isset($field->min) && $field->input < $field->min) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must be greater than or equal to %s', [$field->min])
+            ];
+        }
+
+        // Vérifier si une valeur maximale est définie
+        if (isset($field->max) && $field->input > $field->max) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must be less than or equal to %s', [$field->max])
+            ];
+        }
+
+        // Si tout est correct
+        return ['valid' => true, 'msg' => ''];
     }
 
-    public function date(string $format = 'Y-m-d'): Validator
+
+    public function validateIntType(Field $field): array
     {
-        $this->rules[] = function ($input) use ($format) {
-            $msg = '';
+        $msg = I18n::t('must be a int');
 
-            if (!is_string($input)) {
-                return [
-                    'valid' => false,
-                    'msg' => I18n::t('must be a string date')
-                ];
-            }
+        // Vérifie si la valeur est de type string
+        $valid = is_int($field->input);
 
-            // Essayer de créer un objet DateTime
-            $dateTime = DateTime::createFromFormat($format, $input);
+        return [
+            'valid' => $valid,
+            'msg' => $msg
+        ];
 
-            // Vérifier si la date est valide et si les erreurs de parsing sont présentes
-            if(!$dateTime) {
-                $valid = false;
-            } else {
-                $valid = true;
-            }
-            // Vérifier si la date correspond exactement au format attendu
-            if ($valid) {
-                $valid = $dateTime->format($format) === $input;
-            }
-
-            return [
-                'valid' => $valid,
-                'msg' => I18n::t('must be a valid date in format: %s', [$format])
-            ];
-        };
-
-        return $this;
     }
 
-    public function dateTime(string $format = 'Y-m-d H:i:s'): Validator
+    public function validateFloatType(Field $field): array
     {
-        $this->rules[] = function ($input) use ($format) {
-            $msg = '';
+        $msg = I18n::t('must be a float');
 
-            if (!is_string($input)) {
-                return [
-                    'valid' => false,
-                    'msg' => $msg
-                ];
-            }
+        // Vérifie si la valeur est de type string
+        $valid = is_float($field->input);
 
-            // Essayer de créer un objet DateTime
-            $dateTime = DateTime::createFromFormat($format, $input);
+        return [
+            'valid' => $valid,
+            'msg' => $msg
+        ];
 
-            // Vérifier si la date est valide et si les erreurs de parsing sont présentes
-            if(!$dateTime) {
-                $valid = false;
-            } else {
-                $valid = true;
-            }
+    }
 
-            // Vérifier si la date correspond exactement au format attendu
-            if ($valid) {
-                $valid = $dateTime->format($format) === $input;
-            }
-
+    public function validateMin(Field $field): array
+    {
+        $minimum = $field->min ?? null;
+        if(!$minimum){
             return [
-                'valid' => $valid,
-                'msg' => I18n::t('must be a valid datetime in format: %s', [$format])
+                'valid' => true,
+                'msg' => 'no min set'
             ];
-        };
+        }
+        $msg = I18n::t('must be greater than or equal to %s', [$minimum]);
 
-        return $this;
+        // Convertir les chaînes numériques en nombres
+        if (is_string($field->input) && is_numeric($field->input)) {
+            if (str_contains($field->input, '.')) {
+                $field->input = (float)$field->input;
+            } else {
+                $field->input = (int)$field->input;
+            }
+        }
+
+        // Vérifier si c'est un nombre
+        if (!is_numeric($field->input)) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must be a number')
+            ];
+        }
+
+        return [
+            'valid' => $field->input >= $minimum,
+            'msg' => $msg
+        ];
+
+    }
+
+
+    public function validateMax(Field $field): array
+    {
+        $maximum = $field->max ?? null;
+        if(!$maximum){
+            return [
+                'valid' => true,
+                'msg' => 'no max set'
+            ];
+        }
+
+        $msg = I18n::t('must be less than or equal to %s', [$maximum]);
+
+        // Convertir les chaînes numériques en nombres
+        if (is_string($field->input) && is_numeric($field->input)) {
+            if (str_contains($field->input, '.')) {
+                $field->input = (float)$field->input;
+            } else {
+                $field->input = (int)$field->input;
+            }
+        }
+
+        // Vérifier si c'est un nombre
+        if (!is_numeric($field->input)) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must be a number')
+            ];
+        }
+
+        return [
+            'valid' => $field->input <= $maximum,
+            'msg' => $msg
+        ];
+
+    }
+
+
+    public function validateStartWith(Field $field): array
+    {
+        $prefix = $field->startWith;
+        if(!$prefix){
+           throw new \Exception('startWith is empty on Field');
+        }
+        $msg = I18n::t('must start with "%s"', [$prefix]);
+
+        $caseSensitive = $field->startWithCaseSensitive ?? false;
+
+        if (!is_string($field->input)) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must be a string')
+            ];
+        }
+
+        if ($caseSensitive) {
+            $valid = str_starts_with($field->input, $prefix);
+        } else {
+            $valid = str_starts_with(strtolower($field->input), strtolower($prefix));
+        }
+
+        return [
+            'valid' => $valid,
+            'msg' => $msg
+        ];
+
+    }
+
+    public function validatePositive(Field $field): array
+    {
+        $msg = '';
+
+        // Convertir les chaînes numériques en nombres
+        if (is_string($field->input) && is_numeric($field->input)) {
+            if (str_contains($field->input, '.')) {
+                $field->input = (float)$field->input;
+            } else {
+                $field->input = (int)$field->input;
+            }
+        }
+
+        // Vérifier si c'est un nombre
+        if (!is_numeric($field->input)) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must be a positive number')
+            ];
+        }
+
+        return [
+            'valid' => $field->input > 0,
+            'msg' => I18n::t('must be a positive number')
+        ];
+
+    }
+
+    public function validateDate(Field $field): array
+    {
+        $format = $field->dateFormat;
+        $msg = '';
+
+        if (!is_string($field->input)) {
+            return [
+                'valid' => false,
+                'msg' => I18n::t('must be a string date')
+            ];
+        }
+
+        // Essayer de créer un objet DateTime
+        $dateTime = DateTime::createFromFormat($format, $field->input);
+
+        // Vérifier si la date est valide et si les erreurs de parsing sont présentes
+        if (!$dateTime) {
+            $valid = false;
+        } else {
+            $valid = true;
+        }
+        // Vérifier si la date correspond exactement au format attendu
+        if ($valid) {
+            $valid = $dateTime->format($format) === $field->input;
+        }
+
+        return [
+            'valid' => $valid,
+            'msg' => I18n::t('must be a valid date in format: %s', [$format])
+        ];
+
+    }
+
+    public function validateDateTime(Field $field): array
+    {
+        $format = $field->dateTimeFormat;
+        $msg = '';
+
+        if (!is_string($field->input)) {
+            return [
+                'valid' => false,
+                'msg' => $msg
+            ];
+        }
+
+        // Essayer de créer un objet DateTime
+        $dateTime = DateTime::createFromFormat($format, $field->input);
+
+        // Vérifier si la date est valide et si les erreurs de parsing sont présentes
+        if (!$dateTime) {
+            $valid = false;
+        } else {
+            $valid = true;
+        }
+
+        // Vérifier si la date correspond exactement au format attendu
+        if ($valid) {
+            $valid = $dateTime->format($format) === $field->input;
+        }
+
+        return [
+            'valid' => $valid,
+            'msg' => I18n::t('must be a valid datetime in format: %s', [$format])
+        ];
+
     }
 
 
@@ -475,27 +937,23 @@ class Validator
      * @param bool $strict Utiliser une comparaison stricte (===)
      * @return Validator
      */
-    public function inArray(array $allowedValues, bool $strict = false): Validator
+    public function validateInArray(Field $field): array
     {
-        $this->rules[] = function ($input) use ($allowedValues, $strict) {
-            $valid = in_array($input, $allowedValues, $strict);
+        $valid = in_array($field->input, $field->inArray);
 
-            // Crée un message lisible avec les valeurs autorisées
-            $valuesString = implode(', ', array_map(function ($value) {
-                if (is_null($value)) return 'null';
-                if (is_bool($value)) return $value ? 'true' : 'false';
-                return (string)$value;
-            }, $allowedValues));
+        // Crée un message lisible avec les valeurs autorisées
+        $valuesString = implode(', ', array_map(function ($value) {
+            if (is_null($value)) return 'null';
+            if (is_bool($value)) return $value ? 'true' : 'false';
+            return (string)$value;
+        }, $field->inArray));
 
-            return [
-                'valid' => $valid,
-                'msg' => I18n::t("must be one of the following values : $valuesString")
-            ];
-        };
+        return [
+            'valid' => $valid,
+            'msg' => I18n::t("must be one of the following values : $valuesString")
+        ];
 
-        return $this;
     }
-
 
 
 }

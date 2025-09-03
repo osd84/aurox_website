@@ -3,7 +3,7 @@
         'name' => 'osd84/aurox_website',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '60d7ad253029c196d76162c12338aed079fb74e9',
+        'reference' => 'd696c324157f5dc74620e0da90ac55f8dc25327e',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'osd84/aurox' => array(
-            'pretty_version' => '0.1.17',
-            'version' => '0.1.17.0',
-            'reference' => 'eae809f4c308b8fd26f44336bfc3c5c1661f632e',
+            'pretty_version' => '0.1.25',
+            'version' => '0.1.25.0',
+            'reference' => '4cd810c8084f001b1175ea994adfd6181e6acbe4',
             'type' => 'library',
             'install_path' => __DIR__ . '/../osd84/aurox',
             'aliases' => array(),
@@ -22,7 +22,7 @@
         'osd84/aurox_website' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '60d7ad253029c196d76162c12338aed079fb74e9',
+            'reference' => 'd696c324157f5dc74620e0da90ac55f8dc25327e',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -37,12 +37,12 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
-        'phpmailer/phpmailer' => array(
-            'pretty_version' => 'v6.10.0',
+        'osd84/phpmailer' => array(
+            'pretty_version' => '6.10',
             'version' => '6.10.0.0',
-            'reference' => 'bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144',
+            'reference' => '0ff2d3c8ead628df2493537d9f91db962aa47718',
             'type' => 'library',
-            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'install_path' => __DIR__ . '/../osd84/phpmailer',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
