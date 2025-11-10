@@ -34,6 +34,8 @@ Class Translations {
         'Please wait while the content is loading..' => 'Veuillez patienter pendant le chargement du contenu..',
         'Please complete the form below' => 'Veuillez compléter le formulaire ci-dessous',
         'Enter the required information :' => 'Veuillez entrer les informations requises :',
+        'Enter the' => 'Entrez le',
+        'character' => 'caractère',
     ];
 
     public static array $en = [
@@ -42,6 +44,8 @@ Class Translations {
         '__testOverwrite2' => 'get From Core',
         '__date' => 'Y-m-d',
         '__dateTime' => 'Y-m-d H:i:s',
+        'Entrez le' => 'Enter the',
+        'character' => 'character',
     ];
 
 }

@@ -26,6 +26,7 @@ class AppUrls
 
     public const PAGE_FORMS = '/forms.php';
     public const PAGE_MODALS = '/modals.php';
+    public const PAGE_CAPTCHA = '/captcha.php';
     public const CATEGORY_SELECT2 = '/category_select2.php';
 
 

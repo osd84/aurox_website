@@ -40,6 +40,7 @@ return [
     'mailPass' => '<changMe>',
     'mailFrom' => '<changMe>',
     'mailContactDest' => '<changMe>',
+    'mailSupportDest' => '<changMe>',
 
 
 

@@ -42,20 +42,39 @@ use OsdAurox\Sec;
 <body>
 <div class="container">
 
-    <header class="py-3">
-        <h1><?= Sec::hNoHtml($headerTitle ?? "OSD_Aurox™ - Website Starter pack"); ?></h1>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <header class="py-3 border-bottom bg-white shadow-sm">
+        <div class="container d-flex align-items-center justify-content-between">
+            <h1 class="mb-0 fs-4"><?= Sec::hNoHtml($headerTitle ?? "OSD_Aurox™ - Website Starter Pack"); ?></h1>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mt-2 border rounded">
             <div class="container-fluid">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::HOME) ?>">Accueil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::PAGE_FORMS) ?>">Formulaires</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::PAGE_MODALS) ?>">Modales</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::PAGE_MOBILE) ?>">Mobiles</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::PAGE_AJAX) ?>">Ajax</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= Sec::hNoHtml(AppUrls::NOT_FOUND) ?>">404</a></li>
-                </ul>
+                <!-- Marque visible sur mobile -->
+                <a class="navbar-brand fw-bold d-lg-none" href="<?= Sec::hNoHtml(AppUrls::HOME) ?>">
+                    OSD_Aurox™
+                </a>
+
+                <!-- Bouton hamburger -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav"
+                        aria-controls="siteNav" aria-expanded="false" aria-label="Menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Liens -->
+                <div class="collapse navbar-collapse justify-content-end" id="siteNav">
+                    <ul class="navbar-nav text-center">
+                        <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::HOME) ?>">Accueil</a></li>
+                        <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::PAGE_FORMS) ?>">Formulaires</a></li>
+                        <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::PAGE_MODALS) ?>">Modales</a></li>
+                        <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::PAGE_MOBILE) ?>">Mobiles</a></li>
+                        <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::PAGE_AJAX) ?>">Ajax</a></li>
+                        <li class="nav-item d-none d-lg-block"><span class="nav-link disabled px-1">|</span></li>
+                        <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::NOT_FOUND) ?>">404</a></li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </header>
+
     <hr>
     <?php require_once APP_ROOT . '/templates/helpers/flash.php'; ?>

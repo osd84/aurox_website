@@ -36,6 +36,7 @@ Class AppConfig {
     public string $port;
     public string $loginUrlForm;
     public string $mailContactDest;
+    public string $mailSupportDest;
     public string $mailFrom;
     public string $mailHost;
     public string $mailPass;
@@ -94,6 +95,7 @@ Class AppConfig {
         $this->loginUrlForm = $conf['loginUrlForm'] ?? '/';
         // MailConf
         $this->mailContactDest = $conf['mailContactDest'] ?? false;
+        $this->mailSupportDest = $conf['mailSupportDest'] ?? false;
         $this->mailFrom = $conf['mailFrom'] ?? false;
         $this->mailHost = $conf['mailHost'] ?? false;
         $this->mailPass = $conf['mailPass'] ?? false;
