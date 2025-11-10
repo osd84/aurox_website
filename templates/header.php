@@ -42,7 +42,7 @@ use OsdAurox\Sec;
 <body>
 <div class="container">
 
-    <header class="py-3 border-bottom bg-white shadow-sm">
+    <header class="py-3 border-bottom bg-white">
         <div class="container d-flex align-items-center justify-content-between">
             <h1 class="mb-0 fs-4"><?= Sec::hNoHtml($headerTitle ?? "OSD_Aurox™ - Website Starter Pack"); ?></h1>
         </div>
