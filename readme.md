@@ -9,7 +9,7 @@ Doc : https://aurox.fr/
 ## Utilisation comme squelette d’application
 
 1. Téléchargez la dernière release :
-   👉  https://github.com/osd84/aurox_website/releases/latest
+   👉  https://aurox.fr/versions/aurox_website-last.zip
 
 2. Décompressez-la à la racine de votre projet web.
 
