@@ -157,6 +157,10 @@ class I18n
             // on récupère le format dans le fichier de traduction
             // on peut écraser se format en modifiant /translations/locale.php
             $format = self::t('__date');
+            if($format === '__date') {
+                $format = 'Y-m-d'; // us par défaut
+                error_log('__date not found in translations : /translations/' . Sec::hNoHtml($locale) . '.php add an entry __date => "Y-m-d"' );
+            }
         }
 
         return Sec::hNoHtml(date($format, strtotime($date)));
@@ -183,6 +187,10 @@ class I18n
 
         if ($locale) {
             $format = self::t('__dateTime');
+            if($format === '__dateTime') {
+                $format = 'd/m/Y H:i:s'; // us par défaut
+                error_log('__dateTime not found in translations : /translations/' . Sec::hNoHtml($locale) . '.php add an entry __date => "d/m/Y H:i:s"' );
+            }
         }
 
         if(!$showSec) {

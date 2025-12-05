@@ -760,5 +760,11 @@ sleep(3);
 $result = Sec::setRateLimit(2, 3, 'testEndpoint');
 $tester->assertEqual($result, true, "Après expiration, la limite doit être réinitialisée (endpoint spécifique)");
 
+// Test : sanitize tout seul
+$result = Sec::sanitize('test <script>alert("XSS")</script>');
+$tester->assertEqual($result, 'testalertXSS', "Le script doit être supprimé");
+
+$result = Sec::sanitize('test <script>alert("XSS-89")</script>', '09');
+$tester->assertEqual($result, '89', "Le script doit être supprimé");
 
 $tester->footer(exit: false);

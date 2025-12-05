@@ -97,7 +97,7 @@ class Sec
      * @param string $type Le type de sanitisation à appliquer
      * @return mixed La valeur sanitisée selon le type spécifié, ou null si la valeur est un tableau ou si le type est invalide
      */
-    protected static function sanitize(mixed $value, string $type): mixed
+    public static function sanitize(mixed $value, string $type = 'aZ09'): mixed
     {
 
         // tableau rejeté, à mettre à plat
@@ -568,5 +568,28 @@ class Sec
             die('Trop de requêtes, veuillez patienter.');
         }
     }
+
+    public static function isRoleInArrayBool(array $roles): bool
+    {
+        if (!isset($_SESSION['user']) || !isset($_SESSION['user']['role'])) {
+            return false;
+        }
+        return in_array($_SESSION['user']['role'], $roles, true);
+    }
+
+    public static function isRoleInArrayOrDie(array $roles, $flash = true, $redirect = true): void
+    {
+        if (!self::isRoleInArrayBool($roles)) {
+            if ($flash) {
+                Flash::add('danger', 'Accès refusé');
+            }
+            if ($redirect) {
+                header('Location: ' . AppUrls::LOGIN);
+                exit;
+            }
+            die('Accès refusé');
+        }
+    }
+
 
 }

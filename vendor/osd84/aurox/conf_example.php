@@ -46,4 +46,6 @@ return [
 
     'lang' => ['fr', 'en', 'it'],
     'discordWebhook' => 'https://discord.com/api/webhooks/<change_me>',
+//    'ban_file_path' => '/home/osd/to_ban.txt', permet de spécifier un fichier supplémentaire pour stocker les adresses IP à bannir
+
 ];

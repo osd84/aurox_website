@@ -6,9 +6,6 @@ Documentation : https://aurox.fr
 
 ---
 
-⚠️ **ALPHA - Ne pas utiliser en production**  
-Le projet est en cours de développement, tout peut encore changer. À vos risques et périls. 😉
-
 **Licence : MIT**  
 **Prérequis : Apache2 + PHP ≥ 8.1**
 

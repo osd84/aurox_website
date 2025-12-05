@@ -215,6 +215,7 @@ class Ban
         $logtimed = "$date - $ip\n";
         file_put_contents(APP_ROOT . '/banlog__.php', $logtimed, FILE_APPEND);
         if(AppConfig::get('ban_file_path')) {
+            // système qui permet d'ajouter les ips dans un fichier commun pour être récupéré par un app externe
             file_put_contents(AppConfig::get('ban_file_path'), $log, FILE_APPEND);
         }
         $appName = AppConfig::get('appName') ?: 'UnknownAppName';

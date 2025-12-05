@@ -7,49 +7,8 @@ use OsdAurox\Sec;
 Class AppConfig {
 
     private static ?self $instance = null;
-    public ?bool $debug;
-    public ?string $appUrl;
-    public array $lang;
-    public bool $featureRegister;
-    public bool $featureUserAllowAdminCreate;
-    public bool $nonce;
-    public int $passwordMaxLength;
-    public int $passwordMinLength;
-    public string $adminFolder;
-    public string $appAuthor;
-    public string $appDescription;
-    public string $appFavicon;
-    public string $appKeywords;
-    public string $appLang;
-    public string $appLogo;
-    public string $appName;
-    public string $appTitle;
-    public string $appVersion;
-    public string $charset;
-    public string $db;
-    public string $devIp;
-    public bool $disableHttpsRedirect;
-    public string $devUrl;
-    public string $discordWebhook;
-    public string $host;
-    public string $dbActive;
-    public string $port;
-    public string $loginUrlForm;
-    public string $mailContactDest;
-    public string $mailSupportDest;
-    public string $mailFrom;
-    public string $mailHost;
-    public string $mailPass;
-    public string $mailPort;
-    public string $mailSsl;
-    public string $mailTls;
-    public string $mailUser;
-    public string $pass;
-    public string $passwordComplexity;
-    public string $prodUrl;
-    public string $salt;
-    public string $user;
-    public string $ban_file_path;
+
+    private array $data = [];
 
     public static function init(array $config): self
     {
@@ -60,57 +19,60 @@ Class AppConfig {
         return self::$instance;
     }
 
-
     private function __construct(array $conf)
     {
-        $this->adminFolder = $conf['adminFolder'] ?? 'admin';
-        $this->appAuthor = $conf['appAuthor'] ?? '-';
-        $this->appDescription = $conf['appDescription'] ?? '-';
-        $this->appFavicon = $conf['appFavicon'] ?? 'favicon.ico';
-        $this->appKeywords = $conf['appKeywords'] ?? '-';
-        $this->appLang = $conf['appLang'] ?? 'fr';
-        $this->appLogo = $conf['appLogo'] ?? 'logo.png';
-        $this->appName = $conf['appName'] ?? 'DefaultAppName';
-        $this->appTitle = $conf['appTitle'] ?? 'DefaultTitle';
-        $this->appUrl = $conf['appUrl'];
-        $this->appVersion = $conf['appVersion'] ?? '1.0.0';
-        $this->debug = $conf['debug'] ?? false;
-        $this->devIp = $conf['devIp'] ?? '127.0.0.1';
-        // Désactive la redirection HTTPS en prod,  mode debug = false
-        $this->disableHttpsRedirect = $conf['disableHttpsRedirect'] ?? true;
-        $this->devUrl = $conf['devUrl'] ?? 'http://localhost';
-        $this->discordWebhook = $conf['discordWebhook'] ?? '';
-        $this->featureRegister = $conf['featureRegister'] ?? false;
-        $this->featureUserAllowAdminCreate = $conf['featureUserAllowAdminCreate'] ?? false;
-        // MysqlConf
-        $this->dbActive = $conf['dbActive'] ?? false;
-        $this->host = $conf['host'] ?? '127.0.0.1';
-        $this->port = $conf['port'] ?? '3306';
-        $this->db = $conf['db'] ?? 'default_db';
-        $this->user = $conf['user'] ?? 'root';
-        $this->pass = $conf['pass'] ?? '';
-        $this->charset = $conf['charset'] ?? 'utf8mb4';
-        // LoginConf
-        $this->lang = $conf['lang'] ?? ['fr'];
-        $this->loginUrlForm = $conf['loginUrlForm'] ?? '/';
-        // MailConf
-        $this->mailContactDest = $conf['mailContactDest'] ?? false;
-        $this->mailSupportDest = $conf['mailSupportDest'] ?? false;
-        $this->mailFrom = $conf['mailFrom'] ?? false;
-        $this->mailHost = $conf['mailHost'] ?? false;
-        $this->mailPass = $conf['mailPass'] ?? false;
-        $this->mailPort = $conf['mailPort'] ?? false;
-        $this->mailSsl = $conf['mailSsl'] ?? false;
-        $this->mailTls = $conf['mailTls'] ?? false;
-        $this->mailUser = $conf['mailUser'] ?? false;
-        $this->nonce = $conf['nonce'] ?? false;
-        $this->passwordComplexity = $conf['passwordComplexity'] ?? '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/';
-        $this->passwordMaxLength = $conf['passwordMaxLength'] ?? 255;
-        $this->passwordMinLength = $conf['passwordMinLength'] ?? 8;
-        $this->prodUrl = $conf['prodUrl'] ?? 'http://localhost';
-        $this->salt = $conf['salt'] ?? '';
-        $this->ban_file_path  = $conf['ban_file_path'] ?? '';
+        // Defaults internes (optionnels)
+        $defaults = [
+            'adminFolder' => 'admin',
+            'appName' => null,
+            'appTitle' =>  null,
+            'appAuthor' => null,
+            'appDescription' => null,
+            'appKeywords' => null,
+            'appFavicon' => 'favicon.ico',
+            'appLogo' => 'logo.png',
+            'appLang' => 'fr',
+            'appVersion' => '1.0.0',
+            'devIp' => '127.0.0.1',
+            'disableHttpsRedirect' => true,
+            'devUrl' => 'http://localhost',
+            'prodUrl' => 'http://localhost',
+            'appUrl' => 'http://localhost',
+            'debug' => false,
+            'dbActive' => false,
+            'host' => '127.0.0.1',
+            'port' => '3306',
+            'db' => 'default_db',
+            'user' => 'userdb',
+            'pass' => '',
+            'charset' => 'utf8mb4',
+            'lang' => ['fr'],
+            'loginUrlForm' => '/',
+            'mailContactDest' => null,
+            'mailSupportDest' => null,
+            'mailFrom' => null,
+            'mailHost' => null,
+            'mailPass' => null,
+            'mailPort' => 465,
+            'mailSsl' => true,
+            'mailTls' => false,
+            'mailUser' => null,
+            'nonce' => false,
+            'passwordComplexity' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/',
+            'passwordMaxLength' => 255,
+            'passwordMinLength' => 8,
+            'salt' => '',
+            'discordWebhook' => '',
+            'ban_file_path' => '',
+            'featureRegister' => false,
+            'featureUserAllowAdminCreate' => false,
+        ];
+
+        // on fusionne les valeurs fournies avec les defaults
+        $this->data = array_replace($defaults, $conf);
     }
+
+
 
     public static function getInstance(): self
     {
@@ -120,18 +82,56 @@ Class AppConfig {
         return self::$instance;
     }
 
-    public static function get(string $key, $default = '', $safe=false) {
-
+    public static function get(string $key, $default = '', bool $safe = false)
+    {
         $instance = self::getInstance();
-        if(!$safe) {
-            return Sec::h($instance->$key ?? $default);
+        $value = $instance->data[$key] ?? $default;
+
+        if ($safe) {
+            return $value;
         }
-        return $instance->$key ?? $default;
+
+        // si c'est scalaire, on échappe
+        if (is_scalar($value)) {
+            return Sec::h((string)$value);
+        }
+
+        // tableaux/objets : on ne touche pas
+        return $value;
+    }
+
+    /**
+     * Magic méthode pour récupérer des propriétés depuis le tableau de configuration via $instance->
+     *
+     * @param string $key Le nom de la propriété à récupérer.
+     * @return mixed|null retourne la valeur de la propriété ou null si elle n'existe pas.'
+     */
+    public function __get(string $key): mixed
+    {
+        // on récupère la valeur brute dans le tableau
+        return $this->data[$key] ?? null;
+    }
+
+    public static function all(): array
+    {
+        return self::getInstance()->data;
     }
 
     public static function isDebug(): bool
     {
         return self::get('debug');
+    }
+
+    public static function dsn(): string
+    {
+        $c = self::getInstance()->data;
+        return sprintf(
+            'mysql:host=%s;port=%s;dbname=%s;charset=%s',
+            $c['host'],
+            $c['port'],
+            $c['db'],
+            $c['charset']
+        );
     }
 
 }

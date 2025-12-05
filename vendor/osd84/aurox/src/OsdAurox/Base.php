@@ -72,4 +72,19 @@ class Base
         header('Location: ' . $url);
         exit;
     }
+
+    public static function scriptTag($path): string
+    {
+        $realPath = APP_ROOT . '/public/' . $path;
+        $timestamp = filemtime($realPath);
+        return "<script src='$path?v=$timestamp'></script>";
+    }
+
+    public static function cssTag($path): string
+    {
+        $realPath = APP_ROOT . '/public/' . $path;
+        $timestamp = filemtime($realPath);
+        return "<link rel='stylesheet' href='$path?v=$timestamp'>";
+    }
+
 }
