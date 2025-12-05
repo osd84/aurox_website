@@ -4,28 +4,10 @@
 
 Démo : https://demo-site.aurox.fr/
 
-Doc : https://aurox.fr/
+Doc : https://aurox.fr/start.php
 
-## Utilisation comme squelette d’application
+Téléchargez la dernière release :  https://aurox.fr/versions/aurox_website-last.zip
 
-1. Téléchargez la dernière release :
-   👉  https://aurox.fr/versions/aurox_website-last.zip
-
-2. Décompressez-la à la racine de votre projet web.
-
-
-3. Copiez le fichier `conf_example.php` en `conf.php` et adaptez-le à votre projet.
-
-
-6. En mode **DEV** lancez directement depuis le dossier racince `php -S localhost:8080 -t public `
-
-5. En **PROD** configurez Apace2 Apache pour exposer uniquement le dossier `/public` :
-
-```apache
-DocumentRoot /var/www/mon_projet/public/
-```
-
----
 
 ## Structure de base
 
