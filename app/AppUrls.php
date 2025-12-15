@@ -13,6 +13,7 @@ class AppUrls
 
     public const PAGE_CONTACT = '/contact.php';
     public const PAGE_AJAX = '/ajax.php';
+    public const PAGE_JS = '/js.php';
     public const RSS = '/rss.php';
 
     public const PAGE_FORMS = '/forms.php';

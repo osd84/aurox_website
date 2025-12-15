@@ -28,6 +28,8 @@ use OsdAurox\Sec;
     <script src="/js/osd-modal-loader.js"></script>
     <script src="/js/osd-modal-alert.js"></script>
     <script src="/js/osd-modal-confirm.js"></script>
+    <script src="/js/osd-bp.js"></script>
+
 
     <!-- Select2 -->
     <link href="/plugin/select2/css/select2.min.css" rel="stylesheet" />
@@ -68,6 +70,7 @@ use OsdAurox\Sec;
                         <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::PAGE_MODALS) ?>">Modales</a></li>
                         <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::PAGE_MOBILE) ?>">Mobiles</a></li>
                         <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::PAGE_AJAX) ?>">Ajax</a></li>
+                        <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::PAGE_JS) ?>">JS</a></li>
                         <li class="nav-item d-none d-lg-block"><span class="nav-link disabled px-1">|</span></li>
                         <li class="nav-item"><a class="nav-link py-2" href="<?= Sec::hNoHtml(AppUrls::NOT_FOUND) ?>">404</a></li>
                     </ul>
