@@ -28,6 +28,7 @@ use OsdAurox\Sec;
     <script src="/js/osd-modal-loader.js"></script>
     <script src="/js/osd-modal-alert.js"></script>
     <script src="/js/osd-modal-confirm.js"></script>
+    <script src="/js/osd-bp.js"></script>
 
     <!-- Select2 -->
     <link href="/plugin/select2/css/select2.min.css" rel="stylesheet" />
